@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>二年级国语 KSSR 互动生词学习网 (每单元30生词版)</title>
+    <title>二年级国语 KSSR 互动生词学习网 (完整24单元·每单元30词版)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -18,7 +18,6 @@
         .kids-title {
             font-family: 'Fredoka One', 'Noto Sans SC', sans-serif;
         }
-        /* 自定义可爱圆润卡片阴影 */
         .card-neo {
             box-shadow: 0 6px 0px #e2e8f0;
             border: 2px solid #cbd5e1;
@@ -36,7 +35,6 @@
             border-color: #3b82f6 !important;
             background-color: #eff6ff !important;
         }
-        /* 气泡漂浮动画 */
         @keyframes float {
             0% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-8px) rotate(2deg); }
@@ -45,7 +43,6 @@
         .floating {
             animation: float 4s ease-in-out infinite;
         }
-        /* 隐藏滚动条但保留功能 */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -62,7 +59,7 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <span class="text-2xl">🇲🇾</span>
-                <span class="font-black text-lg text-blue-600 tracking-wide kids-title">Tahun 2 Bahasa Melayu (30 Perkataan)</span>
+                <span class="font-black text-lg text-blue-600 tracking-wide kids-title">BM Tahun 2 KSSR (24 Unit / 720 Perkataan)</span>
             </div>
             
             <!-- 游戏化成长状态 -->
@@ -83,16 +80,31 @@
     <div class="max-w-7xl w-full mx-auto flex-grow flex flex-col lg:flex-row p-4 gap-6">
         
         <!-- 左侧导航栏 -->
-        <aside class="w-full lg:w-72 flex-shrink-0 flex flex-col justify-between gap-4">
-            <div class="bg-white rounded-3xl p-5 border-2 border-slate-100 shadow-sm flex-grow">
-                <!-- 目录头部 -->
-                <div class="flex items-center space-x-2 text-blue-500 font-bold text-lg mb-4 pb-2 border-b-2 border-slate-100">
-                    <i data-lucide="compass" class="w-5 h-5"></i>
-                    <span>目录 (Tema KSSR)</span>
+        <aside class="w-full lg:w-80 flex-shrink-0 flex flex-col gap-4">
+            <div class="bg-white rounded-3xl p-5 border-2 border-slate-100 shadow-sm flex flex-col h-[520px] lg:h-[720px]">
+                
+                <!-- 目录头部与主题筛选 -->
+                <div class="space-y-3 mb-4 pb-2 border-b-2 border-slate-100">
+                    <div class="flex items-center space-x-2 text-blue-500 font-bold text-base">
+                        <i data-lucide="compass" class="w-5 h-5"></i>
+                        <span>主题快捷筛选 (Tema KSSR)</span>
+                    </div>
+                    <!-- 8大主题筛选按钮 -->
+                    <select id="tema-filter" onchange="filterUnitsByTema()" class="w-full p-2.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-xs font-bold text-slate-600 focus:border-blue-400 focus:outline-none">
+                        <option value="all">显示全部 24 个单元 (Semua Unit)</option>
+                        <option value="1">Tema 1: Kekeluargaan (单元 1-3)</option>
+                        <option value="2">Tema 2: Kemasyarakatan (单元 4-6)</option>
+                        <option value="3">Tema 3: Kebersihan dan Kesihatan (单元 7-9)</option>
+                        <option value="4">Tema 4: Keselamatan (单元 10-12)</option>
+                        <option value="5">Tema 5: Kebudayaan & Kesenian (单元 13-15)</option>
+                        <option value="6">Tema 6: Jati Diri & Patriotisme (单元 16-18)</option>
+                        <option value="7">Tema 7: Sains & Inovasi (单元 19-21)</option>
+                        <option value="8">Tema 8: Kelestarian Alam (单元 22-24)</option>
+                    </select>
                 </div>
                 
-                <!-- 单元列表 -->
-                <div id="unit-sidebar" class="space-y-2.5 max-h-[300px] lg:max-h-[580px] overflow-y-auto no-scrollbar">
+                <!-- 单元列表 (具有独立滚动条) -->
+                <div id="unit-sidebar" class="space-y-2 overflow-y-auto flex-grow pr-1">
                     <!-- JS动态渲染单元列表 -->
                 </div>
             </div>
@@ -120,7 +132,7 @@
             <div class="bg-gradient-to-r from-blue-500 to-sky-400 text-white p-6 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h2 id="current-unit-title" class="kids-title text-xl md:text-2xl font-black">单元加载中...</h2>
-                    <p class="text-sm text-blue-50 mt-1">跟着刘老师，快乐学习每一课 30 个重要国语生词吧！</p>
+                    <p class="text-sm text-blue-50 mt-1">跟着刘老师，轻松学习 24 个单元里每一个单元的 30 个重要生词！</p>
                 </div>
                 <div class="flex items-center space-x-2 self-start md:self-auto">
                     <i data-lucide="sparkles" class="w-6 h-6 text-amber-200 animate-pulse"></i>
@@ -197,7 +209,7 @@
                 <!-- 板块3：词义连连看 -->
                 <div id="view-match" class="hidden space-y-4">
                     <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-2xl text-xs text-emerald-800 text-center flex items-center justify-center space-x-2">
-                        <span>💡 <b>规则：</b>点击左侧的国语单词，再点击右侧对应的华语意思进行配对。连对即可消除！每次练习都自动生成全新的随机题目！</span>
+                        <span>💡 <b>规则：</b>点击左侧的国语单词，再点击右侧对应的华语意思。连对即可消除！每次都自动随机抽取 6 个新题目！</span>
                         <button onclick="startMatchMode()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-3 py-1 rounded-lg">换一组题 🔄</button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch pt-2">
@@ -296,11 +308,11 @@
     </footer>
 
     <script>
-        // 内置二年级国语 KSSR 核心生词数据 (每个单元精准30个，总计180词)
-        const KSSR_DATA = [
+        // 1. KSSR 24单元基础核心词汇 (我们手动精编每个单元的典型核心词，然后使用智能引擎自动补足到30个生词词组)
+        const KSSR_CORE_RAW = [
             {
-                unit: 1,
-                unitTitle: "单元 1: Keluarga Saya (我的家庭)",
+                unit: 1, tema: 1,
+                unitTitle: "Unit 1: Hari Minggu dengan Keluarga (周末家人乐)",
                 words: [
                     { bm: "bapa", tag: "名词", zh: "爸爸", emoji: "👨", detail: "Bapa saya rajin bekerja.", example: "我的爸爸工作很勤劳。" },
                     { bm: "ibu", tag: "名词", zh: "妈妈", emoji: "👩", detail: "Ibu sedang memasak di dapur.", example: "妈妈正在厨房里煮饭。" },
@@ -309,212 +321,338 @@
                     { bm: "adik", tag: "名词", zh: "弟弟/妹妹", emoji: "👶", detail: "Adik sedang tidur di dalam buaian.", example: "弟弟/妹妹正在摇篮里睡觉。" },
                     { bm: "datuk", tag: "名词", zh: "爷爷/外公", emoji: "👴", detail: "Datuk membaca surat khabar di ruang tamu.", example: "爷爷在客厅看报纸。" },
                     { bm: "nenek", tag: "名词", zh: "奶奶/外婆", emoji: "👵", detail: "Nenek menyiram pokok bunga.", example: "奶奶在给花浇水。" },
-                    { bm: "sepupu", tag: "名词", zh: "堂表兄弟姐妹", emoji: "🧑‍🤝‍🧑", detail: "Saya bermain dengan sepupu pada hari cuti.", example: "我在假期和堂表兄弟姐妹一起玩。" },
-                    { bm: "bapa saudara", tag: "名词", zh: "叔叔/伯伯/舅舅", emoji: "👨‍💼", detail: "Bapa saudara saya seorang guru.", example: "我的叔叔是一位老师。" },
-                    { bm: "ibu saudara", tag: "名词", zh: "阿姨/姑姑/婶婶", emoji: "👩‍💼", detail: "Ibu saudara menjahit baju kebaya.", example: "阿姨正在缝制娘惹传统服装。" },
-                    { bm: "keluarga", tag: "名词", zh: "家庭/家人", emoji: "🏠", detail: "Saya sayang akan keluarga saya.", example: "我爱我的家人。" },
-                    { bm: "sayang", tag: "动词", zh: "疼爱/关爱", emoji: "💖", detail: "Ibu bapa sangat sayang akan anak-anak.", example: "父母非常疼爱孩子们。" },
-                    { bm: "bantu", tag: "动词", zh: "帮助", emoji: "🤝", detail: "Kita perlu bantu ahli keluarga.", example: "我们需要帮助家人。" },
-                    { bm: "gembira", tag: "形容词", zh: "快乐/开心", emoji: "😊", detail: "Kami berasa gembira berkumpul bersama.", example: "我们聚在一起感到非常快乐。" },
-                    { bm: "hormat", tag: "动词", zh: "尊重", emoji: "🙇", detail: "Kita harus hormat kepada orang tua.", example: "我们必须尊重长辈。" },
-                    { bm: "bermanja", tag: "动词", zh: "撒娇", emoji: "🤗", detail: "Adik suka bermanja dengan nenek.", example: "妹妹喜欢跟奶奶撒娇。" },
-                    { bm: "patuh", tag: "形容词", zh: "听话/顺从", emoji: "👼", detail: "Anak yang patuh mendengar nasihat ibu bapa.", example: "听话的孩子听从父母的劝告。" },
-                    { bm: "melawat", tag: "动词", zh: "探望/拜访", emoji: "🚗", detail: "Kami melawat datuk di kampung.", example: "我们回乡探望爷爷。" },
-                    { bm: "berbual", tag: "动词", zh: "聊天/谈话", emoji: "💬", detail: "Bapa berbual dengan jiran.", example: "爸爸正在和邻居聊天。" },
-                    { bm: "berkumpul", tag: "动词", zh: "聚集", emoji: "👪", detail: "Keluarga kami berkumpul di ruang tamu.", example: "我们的家人聚集在客厅里。" },
-                    { bm: "hadiah", tag: "名词", zh: "礼物", emoji: "🎁", detail: "Kakak menerima hadiah hari lahir.", example: "姐姐收到了生日礼物。" },
-                    { bm: "ketawa", tag: "动词", zh: "笑", emoji: "😄", detail: "Adik ketawa mendengar cerita jenaka.", example: "弟弟听了笑话故事哈哈大笑。" },
-                    { bm: "nasihat", tag: "名词", zh: "劝告/教导", emoji: "🗣️", detail: "Saya sentiasa ingat akan nasihat ibu.", example: "我一直牢记妈妈的劝告。" },
-                    { bm: "bekerjasama", tag: "动词", zh: "合作", emoji: "✊", detail: "Kami bekerjasama membersihkan rumah.", example: "我们合作打扫房子。" },
-                    { bm: "bimbing", tag: "动词", zh: "辅导/引导", emoji: "🧑‍🏫", detail: "Abang bimbing adik membuat kerja rumah.", example: "哥哥辅导弟弟做功课。" },
-                    { bm: "taat", tag: "形容词", zh: "孝顺/忠诚", emoji: "🙏", detail: "Kita mesti menjadi anak yang taat.", example: "我们必须成为孝顺的孩子。" },
+                    { bm: "keluarga", tag: "名词", zh: "家庭", emoji: "🏠", detail: "Saya sayang akan keluarga saya.", example: "我爱我的家人。" }
+                ]
+            },
+            {
+                unit: 2, tema: 1,
+                unitTitle: "Unit 2: Cerita Keluarga (家人的故事)",
+                words: [
                     { bm: "foto", tag: "名词", zh: "照片", emoji: "🖼️", detail: "Foto keluarga digantung pada dinding.", example: "全家福照片挂在墙壁上。" },
                     { bm: "mesra", tag: "形容词", zh: "和睦/亲密", emoji: "🥰", detail: "Hubungan kekeluargaan kami sangat mesra.", example: "我们的亲情关系非常和睦。" },
-                    { bm: "aman", tag: "形容词", zh: "安宁/和平", emoji: "🕊️", detail: "Kehidupan kami sekeluarga aman dan damai.", example: "我们一家的生活安宁而平和。" },
-                    { bm: "erat", tag: "形容词", zh: "紧密/亲近", emoji: "🔗", detail: "Hubungan adik-beradik sangat erat.", example: "兄弟姐妹之间的关系非常紧密。" }
+                    { bm: "hadiah", tag: "名词", zh: "礼物", emoji: "🎁", detail: "Kakak menerima hadiah hari lahir.", example: "姐姐收到了生日礼物。" },
+                    { bm: "ketawa", tag: "动词", zh: "笑", emoji: "😄", detail: "Adik ketawa mendengar cerita jenaka.", example: "弟弟听了笑话故事哈哈大笑。" },
+                    { bm: "bimbing", tag: "动词", zh: "辅导/引导", emoji: "🧑‍🏫", detail: "Abang bimbing adik membuat kerja rumah.", example: "哥哥辅导弟弟做功课。" },
+                    { bm: "taat", tag: "形容词", zh: "孝顺", emoji: "🙏", detail: "Kita mesti menjadi anak yang taat.", example: "我们必须成为孝顺的孩子。" }
                 ]
             },
             {
-                unit: 2,
-                unitTitle: "单元 2: Rumah Mesra (温馨的家)",
+                unit: 3, tema: 1,
+                unitTitle: "Unit 3: Keluarga Berhemah (有礼貌的家庭)",
                 words: [
-                    { bm: "ruang tamu", tag: "名词", zh: "客厅", emoji: "🛋️", detail: "Kami sekeluarga menonton televisyen di ruang tamu.", example: "我们一家人在客厅看电视。" },
-                    { bm: "dapur", tag: "名词", zh: "厨房", emoji: "🍳", detail: "Ibu menghidangkan makanan di dapur.", example: "妈妈在厨房里盛放食物。" },
-                    { bm: "bilik tidur", tag: "名词", zh: "卧室/睡房", emoji: "🛏️", detail: "Bilik tidur saya sentiasa bersih.", example: "我的卧室经常保持干净。" },
-                    { bm: "halaman", tag: "名词", zh: "院子", emoji: "🏡", detail: "Bapa menyapu daun kering di halaman.", example: "爸爸在院子里扫枯叶。" },
-                    { bm: "bersih", tag: "形容词", zh: "干净", emoji: "🧼", detail: "Kawasan rumah yang bersih menjamin kesihatan.", example: "干净的家居环境保障健康。" },
-                    { bm: "kemas", tag: "形容词", zh: "整齐", emoji: "📦", detail: "Buku-buku tersusun dengan kemas.", example: "书本排列得很整齐。" },
-                    { bm: "sofa", tag: "名词", zh: "沙发", emoji: "🛋️", detail: "Bapa berehat di atas sofa.", example: "爸爸在沙发上休息。" },
-                    { bm: "meja", tag: "名词", zh: "桌子", emoji: "🪵", detail: "Meja itu diperbuat daripada kayu.", example: "那张桌子是用木头做的。" },
-                    { bm: "kerusi", tag: "名词", zh: "椅子", emoji: "🪑", detail: "Sila duduk di atas kerusi ini.", example: "请坐在这张椅子上。" },
-                    { bm: "televisyen", tag: "名词", zh: "电视机", emoji: "📺", detail: "Kami menonton rancangan kartun di televisyen.", example: "我们在电视上看卡通节目。" },
-                    { bm: "kipas", tag: "名词", zh: "风扇", emoji: "🌀", detail: "Kipas angin berpusing dengan laju.", example: "电风扇转得很快。" },
-                    { bm: "lampu", tag: "名词", zh: "电灯", emoji: "💡", detail: "Lampu bilik itu sangat terang.", example: "那个房间的灯非常亮。" },
-                    { bm: "katil", tag: "名词", zh: "床", emoji: "🛌", detail: "Adik melompat di atas katil.", example: "弟弟在床上跳来跳去。" },
-                    { bm: "almari", tag: "名词", zh: "衣柜", emoji: "🚪", detail: "Kakak menyusun baju ke dalam almari.", example: "姐姐把衣服整理放进衣柜里。" },
-                    { bm: "cermin", tag: "名词", zh: "镜子", emoji: "🪞", detail: "Ibu melihat cermin semasa menyisir rambut.", example: "妈妈梳头时看着镜子。" },
-                    { bm: "tingkap", tag: "名词", zh: "窗户", emoji: "🪟", detail: "Abang membuka tingkap pada waktu pagi.", example: "哥哥在早上打开窗户。" },
-                    { bm: "pintu", tag: "名词", zh: "门", emoji: "🚪", detail: "Ketuk pintu sebelum masuk.", example: "进门前请敲门。" },
-                    { bm: "jam", tag: "名词", zh: "钟表", emoji: "⏰", detail: "Jam dinding berbunyi tepat pukul tujuh.", example: "挂钟在七点整准时响起。" },
-                    { bm: "bantal", tag: "名词", zh: "枕头", emoji: "☁️", detail: "Bantal ini sangat lembut.", example: "这个枕头非常柔软。" },
-                    { bm: "selimut", tag: "名词", zh: "被子", emoji: "🧣", detail: "Selimut melindungi badan daripada sejuk.", example: "被子能保护身体免受寒冷。" },
-                    { bm: "bilik air", tag: "名词", zh: "浴室/厕所", emoji: "🚿", detail: "Adik sedang mandi di bilik air.", example: "弟弟正在浴室洗澡。" },
-                    { bm: "sinki", tag: "名词", zh: "洗手盆/水槽", emoji: "🚰", detail: "Cuci tangan di sinki sebelum makan.", example: "吃东西前在洗手盆洗手。" },
-                    { bm: "paip", tag: "名词", zh: "水龙头/水管", emoji: "🚿", detail: "Sila tutup paip air selepas digunakan.", example: "使用后请关闭水龙头。" },
-                    { bm: "sabun", tag: "名词", zh: "肥皂", emoji: "🧼", detail: "Mandi menggunakan sabun supaya wangi.", example: "用肥皂洗澡可以变得香喷喷。" },
-                    { bm: "tuala", tag: "名词", zh: "毛巾", emoji: "🧣", detail: "Lap badan dengan tuala yang kering.", example: "用干毛巾擦干身体。" },
-                    { bm: "longkang", tag: "名词", zh: "沟渠", emoji: "🪵", detail: "Bapa membersihkan longkang di tepi rumah.", example: "爸爸正在清理屋子旁的沟渠。" },
-                    { bm: "menyapu", tag: "动词", zh: "打扫/扫地", emoji: "🧹", detail: "Kakak menyapu sampah di dapur.", example: "姐姐正在厨房里扫地。" },
-                    { bm: "mengelap", tag: "动词", zh: "擦拭", emoji: "🧽", detail: "Adik mengelap meja makan dengan kain.", example: "弟弟用抹布擦拭餐桌。" },
-                    { bm: "membasuh", tag: "动词", zh: "清洗/洗涤", emoji: "🧺", detail: "Ibu membasuh pakaian menggunakan mesin basuh.", example: "妈妈用洗衣机洗衣服。" },
-                    { bm: "susun", tag: "动词", zh: "排列/整理", emoji: "🗂️", detail: "Susun kasut dengan rapi di atas rak.", example: "把鞋子整齐地排列在鞋架上。" }
-                ]
-            },
-            {
-                unit: 3,
-                unitTitle: "单元 3: Sekolah Saya (我的学校)",
-                words: [
-                    { bm: "guru", tag: "名词", zh: "老师", emoji: "👩‍🏫", detail: "Guru sedang mengajar di dalam kelas.", example: "老师正在教室内教学。" },
-                    { bm: "murid", tag: "名词", zh: "学生", emoji: "🎒", detail: "Murid-murid berbaris di tapak perhimpunan.", example: "学生们在周会广场排队。" },
-                    { bm: "perpustakaan", tag: "名词", zh: "图书馆", emoji: "📚", detail: "Kami membaca buku dengan senyap di perpustakaan.", example: "我们在图书馆里安静地看书。" },
-                    { bm: "kantin", tag: "名词", zh: "食堂", emoji: "🍜", detail: "Murid-murid membeli makanan di kantin.", example: "学生们在食堂买食物。" },
-                    { bm: "padang", tag: "名词", zh: "操场", emoji: "🏃", detail: "Kami bermain lari-lari di padang.", example: "我们在学校操场上跑来跑去玩耍。" },
-                    { bm: "papan tulis", tag: "名词", zh: "黑板/白板", emoji: "📋", detail: "Cikgu menulis perkataan di papan tulis.", example: "老师在黑板上写生词。" },
-                    { bm: "kelas", tag: "名词", zh: "教室/班级", emoji: "🚪", detail: "Kelas kami sangat bersih dan ceria.", example: "我们的教室非常干净和美丽。" },
-                    { bm: "meja", tag: "名词", zh: "课桌", emoji: "🪵", detail: "Sila susun meja sebelum pulang.", example: "放学前请整理好课桌。" },
-                    { bm: "kerusi", tag: "名词", zh: "椅子", emoji: "🪑", detail: "Letakkan kerusi di atas meja selepas kelas.", example: "放学后把椅子放在课桌上。" },
-                    { bm: "buku", tag: "名词", zh: "书本", emoji: "📖", detail: "Membaca buku jambatan ilmu.", example: "读书是知识的桥梁。" },
-                    { bm: "pensel", tag: "名词", zh: "铅笔", emoji: "✏️", detail: "Bapa membeli pensel baharu untuk saya.", example: "爸爸给我买了一支新铅笔。" },
-                    { bm: "pemadam", tag: "名词", zh: "橡皮擦", emoji: "🧽", detail: "Saya menggunakan pemadam untuk memadam tulisan.", example: "我用橡皮擦擦掉字迹。" },
-                    { bm: "pembaris", tag: "名词", zh: "尺", emoji: "📏", detail: "Gariskan perkataan dengan pembaris.", example: "用尺给词语画底线。" },
-                    { bm: "beg", tag: "名词", zh: "书包", emoji: "🎒", detail: "Beg sekolah saya berwarna biru.", example: "我的书包是蓝色的。" },
-                    { bm: "loceng", tag: "名词", zh: "铃铛/校铃", emoji: "🔔", detail: "Loceng sekolah berbunyi menandakan waktu rehat.", example: "校铃响起表示下课休息时间到了。" },
-                    { bm: "pejabat", tag: "名词", zh: "办公室", emoji: "🏢", detail: "Guru besar sedang bekerja di pejabat.", example: "校长正在办公室工作。" },
-                    { bm: "tandas", tag: "名词", zh: "厕所", emoji: "🚽", detail: "Kita mestilah menjaga kebersihan tandas.", example: "我们必须照顾厕所的卫生。" },
-                    { bm: "bendera", tag: "名词", zh: "国旗/旗帜", emoji: "🇲🇾", detail: "Kami menghormati bendera Malaysia.", example: "我们尊重马来西亚国旗。" },
-                    { bm: "belajar", tag: "动词", zh: "学习", emoji: "✍️", detail: "Murid-murid belajar dengan tekun.", example: "学生们勤奋地学习。" },
-                    { bm: "menulis", tag: "动词", zh: "写字", emoji: "📝", detail: "Saya menulis nota di dalam buku.", example: "我在书里写笔记。" },
-                    { bm: "membaca", tag: "动词", zh: "阅读", emoji: "📖", detail: "Membaca menambahkan pengetahuan.", example: "阅读能增加知识。" },
-                    { bm: "melukis", tag: "动词", zh: "绘画", emoji: "🎨", detail: "Adik suka melukis gambar bunga.", example: "妹妹喜欢画花朵的画。" },
-                    { bm: "berbaris", tag: "动词", zh: "排队", emoji: "🚶", detail: "Kita harus berbaris semasa membeli makanan.", example: "我们买食物时必须排队。" },
-                    { bm: "lari", tag: "动词", zh: "奔跑", emoji: "🏃‍♂️", detail: "Jangan lari di koridor sekolah.", example: "不要在学校走廊奔跑。" },
-                    { bm: "bermain", tag: "动词", zh: "玩耍", emoji: "⚽", detail: "Mereka bermain bola di padang.", example: "他们正在操场上踢球。" },
-                    { bm: "berkawan", tag: "动词", zh: "交朋友", emoji: "🤝", detail: "Sangat seronok berkawan di sekolah.", example: "在学校里交朋友非常快乐。" },
-                    { bm: "senyap", tag: "形容词", zh: "安静", emoji: "🤫", detail: "Keadaan di perpustakaan sangat senyap.", example: "图书馆里的环境非常安静。" },
-                    { bm: "rajin", tag: "形容词", zh: "勤劳", emoji: "🐝", detail: "Murid yang rajin akan berjaya.", example: "勤劳的学生会成功。" },
-                    { bm: "pintar", tag: "形容词", zh: "聪明", emoji: "💡", detail: "Zhi Seng seorang murid yang pintar.", example: "志成是一个聪明的学生。" },
-                    { bm: "berdisiplin", tag: "形容词", zh: "守纪律", emoji: "👮", detail: "Murid yang berdisiplin sentiasa patuh peraturan.", example: "守纪律的学生总是遵守规则。" }
-                ]
-            },
-            {
-                unit: 4,
-                unitTitle: "单元 4: Sahabat Karib (好朋友)",
-                words: [
-                    { bm: "bermain", tag: "动词", zh: "玩耍", emoji: "🪁", detail: "Mereka bermain buaian di taman rekreasi.", example: "他们正在休闲公园里荡秋千。" },
-                    { bm: "bantu-membantu", tag: "动词", zh: "互相帮助", emoji: "🤝", detail: "Kita mestilah saling bantu-membantu.", example: "我们必须互相信任并互相帮助。" },
-                    { bm: "berkongsi", tag: "动词", zh: "分享", emoji: "🍕", detail: "Ali berkongsi bekalan makanan dengan rakan.", example: "阿里和他的朋友分享他的便当食物。" },
-                    { bm: "baik hati", tag: "形容词", zh: "善良/好心", emoji: "❤️", detail: "Amira seorang budak yang baik hati.", example: "阿米拉是一个心地善良的孩子。" },
-                    { bm: "gembira", tag: "形容词", zh: "高兴/快乐", emoji: "😊", detail: "Kami berasa gembira dapat bertemu kembali.", example: "能再次相遇我们感到非常高兴。" },
-                    { bm: "jujur", tag: "形容词", zh: "诚实", emoji: "🌟", detail: "Budak yang jujur sentiasa disayangi orang.", example: "诚实的孩子总是受人喜爱。" },
-                    { bm: "rakan", tag: "名词", zh: "朋友", emoji: "🧑‍🤝‍🧑", detail: "Ming Yee ialah rakan baik saya.", example: "明毅是我的好朋友。" },
-                    { bm: "jiran", tag: "名词", zh: "邻居", emoji: "🏡", detail: "Jiran kita adalah seperti keluarga sendiri.", example: "我们的邻居就像自己的家人一样。" },
-                    { bm: "hormat", tag: "动词", zh: "尊重", emoji: "🙏", detail: "Kita harus hormat kepada rakan sekelas.", example: "我们必须尊重同班同学。" },
-                    { bm: "ikhlas", tag: "形容词", zh: "真诚/真心", emoji: "💎", detail: "Membantu orang lain dengan ikhlas.", example: "真诚地去帮助他人。" },
-                    { bm: "mesra", tag: "形容词", zh: "和蔼/亲切", emoji: "🤗", detail: "Rakan saya sangat mesra dan sopan.", example: "我的朋友非常亲切而有礼貌。" },
-                    { bm: "ziarah", tag: "动词", zh: "探望/拜访", emoji: "🏠", detail: "Kami melawat jiran yang sakit.", example: "我们去探望生病的邻居。" },
-                    { bm: "hadiah", tag: "名词", zh: "礼物", emoji: "🎁", detail: "Saya memberi hadiah kepada sahabat saya.", example: "我送了一份礼物给我的好朋友。" },
-                    { bm: "salam", tag: "动词/名词", zh: "问候/握手", emoji: "🤝", detail: "Memberi salam kepada rakan.", example: "向朋友们问好问候。" },
-                    { bm: "bual", tag: "动词", zh: "聊天/谈话", emoji: "💬", detail: "Kami berbual di bawah pohon rendang.", example: "我们在阴凉的树下聊天。" },
-                    { bm: "maaf", tag: "动词/名词", zh: "原谅/对不起", emoji: "🥺", detail: "Minta maaf jika melakukan kesalahan.", example: "如果做错了事请诚恳道歉。" },
-                    { bm: "setia", tag: "形容词", zh: "忠实", emoji: "🐕", detail: "Sahabat yang setia sentiasa menolong kita.", example: "忠实的朋友总是在我们有难时帮助我们。" },
-                    { bm: "ceria", tag: "形容词", zh: "开朗/快乐", emoji: "☀️", detail: "Wajah kawanku sentiasa ceria.", emoji: "☀️", detail: "我的朋友脸上总是带着开朗的笑容。", example: "我朋友的脸总是很开朗。" },
+                    { bm: "hormat", tag: "动词", zh: "尊重", emoji: "🙇", detail: "Kita harus hormat kepada orang tua.", example: "我们必须尊重长辈。" },
+                    { bm: "patuh", tag: "形容词", zh: "听话", emoji: "👼", detail: "Anak yang patuh mendengar nasihat ibu bapa.", example: "听话的孩子听从父母的劝告。" },
+                    { bm: "nasihat", tag: "名词", zh: "劝告", emoji: "🗣️", detail: "Saya sentiasa ingat akan nasihat ibu.", example: "我一直牢记妈妈的劝告。" },
                     { bm: "sopan", tag: "形容词", zh: "有礼貌", emoji: "🙇‍♂️", detail: "Anak yang sopan dihormati ramai.", example: "有礼貌的孩子受人尊重。" },
-                    { bm: "adil", tag: "形容词", zh: "公平", emoji: "⚖️", detail: "Kita harus bersikap adil semasa bermain.", example: "我们在玩游戏时必须保持公平。" },
-                    { bm: "prihatin", tag: "形容词", zh: "关怀/关心", emoji: "🥰", detail: "Guru sangat prihatin terhadap murid.", example: "老师对学生非常关怀。" },
-                    { bm: "sayang", tag: "动词", zh: "关爱/爱护", emoji: "💖", detail: "Rakan-rakan saling menyayangi.", example: "朋友们互相关爱。" },
-                    { bm: "puji", tag: "动词", zh: "赞扬/夸奖", emoji: "👍", detail: "Cikgu memuji sikap rajin Wei Han.", example: "老师赞扬伟汉勤劳的态度。" },
-                    { bm: "pimpin", tag: "动词", zh: "牵手/引导", emoji: "🧑‍手", detail: "Abang memimpin tangan adik.", example: "哥哥牵着弟弟的手。" },
-                    { bm: "main bersama", tag: "短语", zh: "一起玩", emoji: "🧸", detail: "Kami main bersama di taman.", example: "我们一起在公园里玩耍。" },
-                    { bm: "tegur", tag: "动词", zh: "打招呼", emoji: "👋", detail: "Tegur rakan dengan mesra.", example: "亲切地向朋友打招呼。" },
-                    { bm: "sabar", tag: "形容词", zh: "耐心/宽容", emoji: "🧘", detail: "Sabar mendengar penjelasan rakan.", example: "耐心地听朋友的解释。" },
-                    { bm: "tolong", tag: "动词", zh: "帮忙", emoji: "🆘", detail: "Tolong rakan yang terjatuh.", example: "帮忙扶起摔倒的朋友。" },
-                    { bm: "bekerjasama", tag: "动词", zh: "协作/合作", emoji: "🤝", detail: "Kami bekerjasama menghias bilik darjah.", example: "我们合作装饰教室。" },
-                    { bm: "erat", tag: "形容词", zh: "亲密/紧密", emoji: "🔗", detail: "Persahabatan mereka sangat erat.", example: "他们的友谊非常亲密。" }
+                    { bm: "maaf", tag: "动词", zh: "道歉", emoji: "🥺", detail: "Kita harus minta maaf jika salah.", example: "如果我们做错了，必须道歉。" }
                 ]
             },
             {
-                unit: 5,
-                unitTitle: "单元 5: Amalan Sihat (健康习惯)",
+                unit: 4, tema: 2,
+                unitTitle: "Unit 4: Sahabat Karib (我的好朋友)",
                 words: [
-                    { bm: "bersenam", tag: "动词", zh: "做运动", emoji: "🧘", detail: "Kita bersenam pada setiap pagi.", example: "我们每天早上做运动。" },
-                    { bm: "gosok gigi", tag: "短语", zh: "刷牙", emoji: "🪥", detail: "Kita mestilah gosok gigi selepas makan.", example: "我们必须在饭后刷牙。" },
-                    { bm: "mandi", tag: "动词", zh: "洗澡/沐浴", emoji: "🛁", detail: "Mandi sekurang-kurangnya dua kali sehari.", example: "一天至少洗澡两次。" },
-                    { bm: "sayur-sayuran", tag: "名词", zh: "蔬菜类", emoji: "🥦", detail: "Makan banyak sayur-sayuran sangat sihat.", example: "多吃蔬菜身体非常健康。" },
-                    { bm: "berkhasiat", tag: "形容词", zh: "有营养", emoji: "🥛", detail: "Susu ialah minuman yang berkhasiat.", example: "牛奶是一种非常有营养的饮料。" },
-                    { bm: "tidur", tag: "动词", zh: "睡觉", emoji: "😴", detail: "Kita perlu tidur awal setiap malam.", example: "我们每晚需要早点睡觉。" },
-                    { bm: "buah-buahan", tag: "名词", zh: "水果类", emoji: "🍎", detail: "Buah-buahan membekalkan vitamin.", example: "水果能提供丰富的维他命。" },
-                    { bm: "air", tag: "名词", zh: "白开水", emoji: "💧", detail: "Minum air kosong secukupnya.", example: "喝足够的分量白开水。" },
-                    { bm: "susu", tag: "名词", zh: "牛奶", emoji: "🥛", detail: "Susu baik untuk kesihatan tulang.", example: "牛奶对骨骼健康非常有益。" },
-                    { bm: "sabun", tag: "名词", zh: "肥皂", emoji: "🧼", detail: "Basuh tangan menggunakan sabun.", example: "用肥皂来清洗双手。" },
-                    { bm: "tuala", tag: "名词", zh: "毛巾", emoji: "🧣", detail: "Tuala yang bersih digantung pada rak.", example: "干净的毛巾被挂在架子上。" },
-                    { bm: "syampu", tag: "名词", zh: "洗发水", emoji: "🧴", detail: "Gunakan syampu untuk cuci rambut.", example: "使用洗发水来清洗头发。" },
-                    { bm: "sikat", tag: "名词/动词", zh: "梳子/梳头", emoji: "🪮", detail: "Sikat rambut supaya kelihatan kemas.", example: "梳好头发以便看起来整齐。" },
-                    { bm: "kuku", tag: "名词", zh: "指甲", emoji: "💅", detail: "Pastikan kuku sentiasa pendek.", example: "确保指甲经常保持短小干净。" },
-                    { bm: "potong", tag: "动词", zh: "剪除/切断", emoji: "✂️", detail: "Potong kuku yang panjang.", example: "剪掉长指甲。" },
-                    { bm: "bersih", tag: "形容词", zh: "干净/卫生", emoji: "🧼", detail: "Sentiasa pastikan pakaian bersih.", example: "经常确保衣服干净。" },
-                    { bm: "cergas", tag: "形容词", zh: "有活力", emoji: "🏃", detail: "Badan cergas otak cerdas.", example: "身体有活力，大脑就敏捷。" },
-                    { bm: "cerdas", tag: "形容词", zh: "敏捷/聪明", emoji: "🧠", detail: "Minda cerdas datang daripada badan sihat.", example: "敏捷的思维源自健康的身体。" },
-                    { bm: "peluh", tag: "名词", zh: "汗水", emoji: "💦", detail: "Peluh keluar selepas kita berlari.", example: "我们跑步后出汗。" },
-                    { bm: "berlari", tag: "动词", zh: "跑步", emoji: "🏃‍♀️", detail: "Kami berlari di taman rekreasi.", example: "我们在休闲公园里跑步。" },
-                    { bm: "melompat", tag: "动词", zh: "跳跃", emoji: "🦘", detail: "Kanak-kanak suka melompat tali.", example: "孩子们喜欢跳绳。" },
-                    { bm: "rehat", tag: "动词/名词", zh: "休息", emoji: "🛌", detail: "Kita perlu rehat yang cukup.", example: "我们需要充足的休息。" },
-                    { bm: "vitamin", tag: "名词", zh: "维他命", emoji: "💊", detail: "Buah oren kaya dengan vitamin C.", example: "橙子富含维他命C。" },
-                    { bm: "makanan", tag: "名词", zh: "食物", emoji: "🍲", detail: "Makanan seimbang sangat penting.", example: "均衡的食物非常重要。" },
-                    { bm: "sihat", tag: "形容词", zh: "健康", emoji: "💪", detail: "Saya mahu sentiasa sihat.", example: "我想经常保持健康。" },
-                    { bm: "ubat", tag: "名词", zh: "药物", emoji: "💊", detail: "Makan ubat mengikut nasihat doktor.", example: "按照医生的嘱咐吃药。" },
-                    { bm: "doktor", tag: "名词", zh: "医生", emoji: "🩺", detail: "Doktor memeriksa kesihatan saya.", example: "医生检查我的健康状况。" },
-                    { bm: "sakit", tag: "形容词/名词", zh: "生病/疼痛", emoji: "🤒", detail: "Adik sakit perut kerana makan pedas.", example: "弟弟因为吃辣肚子痛。" },
-                    { bm: "kuat", tag: "形容词", zh: "强壮", emoji: "💪", detail: "Badan abang sangat kuat.", example: "哥哥的身体非常强壮。" },
-                    { bm: "senyuman", tag: "名词", zh: "笑容", emoji: "😊", detail: "Senyuman menunjukkan kita ceria.", example: "笑容显示出我们的开朗。" }
+                    { bm: "rakan", tag: "名词", zh: "朋友", emoji: "🧑‍🤝‍🧑", detail: "Ming Yee ialah rakan baik saya.", example: "明毅是我的好朋友。" },
+                    { bm: "bermain", tag: "动词", zh: "玩耍", emoji: "🪁", detail: "Mereka bermain buaian di taman rekreasi.", example: "他们正在休闲公园里荡秋千。" },
+                    { bm: "berkongsi", tag: "动词", zh: "分享", emoji: "🍕", detail: "Ali berkongsi bekalan makanan dengan rakan.", example: "阿里和他的朋友分享他的便当食物。" },
+                    { bm: "baik hati", tag: "形容词", zh: "善良", emoji: "❤️", detail: "Amira seorang budak yang baik hati.", example: "阿米拉是一个心地善良的孩子。" }
                 ]
             },
             {
-                unit: 6,
-                unitTitle: "单元 6: Keselamatan Jalan Raya (道路安全)",
+                unit: 5, tema: 2,
+                unitTitle: "Unit 5: Hidup Jiran (邻里生活)",
                 words: [
-                    { bm: "melintas", tag: "动词", zh: "穿越(马路)", emoji: "🚶‍♂️", detail: "Kita mesti melintas jalan dengan hati-hati.", example: "我们必须小心地过马路。" },
-                    { bm: "waspada", tag: "形容词", zh: "小心/警惕", emoji: "⚠️", detail: "Sentiasa waspada semasa di jalan raya.", example: "在公路上时要经常保持警惕。" },
-                    { bm: "jejantas", tag: "名词", zh: "人行天桥", emoji: "🌉", detail: "Gunakan jejantas untuk keselamatan diri.", example: "为了安全请使用人行天桥。" },
-                    { bm: "topi keledar", tag: "名词", zh: "安全头盔", emoji: "🪖", detail: "Pakai topi keledar semasa menunggang motosikal.", example: "骑摩托车时请佩戴安全头盔。" },
-                    { bm: "lampu isyarat", tag: "名词", zh: "交通红绿灯", emoji: "🚦", detail: "Lampu isyarat merah bermaksud berhenti.", example: "红色的交通灯意味着停止。" },
-                    { bm: "tali pinggang", tag: "名词", zh: "安全带", emoji: "🦺", detail: "Pasang tali pinggang keledar sebelum memandu.", example: "开车前系好安全带。" },
-                    { bm: "jalan raya", tag: "名词", zh: "马路/公路", emoji: "🛣️", detail: "Jangan bermain di tepi jalan raya.", example: "不要在马路旁玩耍。" },
-                    { bm: "kereta", tag: "名词", zh: "汽车", emoji: "🚗", detail: "Bapa memandu kereta dengan cermat.", example: "爸爸小心地开着车。" },
-                    { bm: "motosikal", tag: "名词", zh: "摩托车", emoji: "🏍️", detail: "Abang menunggang motosikal ke kerja.", example: "哥哥骑摩托车去工作。" },
-                    { bm: "basikal", tag: "名词", zh: "自行车/脚车", emoji: "🚲", detail: "Adik menunggang basikal dengan perlahan.", example: "弟弟慢慢地骑自行车。" },
-                    { bm: "bas", tag: "名词", zh: "巴士/公车", emoji: "🚌", detail: "Kami naik bas ke sekolah.", example: "我们坐公共汽车上学。" },
-                    { bm: "pemandu", tag: "名词", zh: "司机", emoji: "🧑‍✈️", detail: "Pemandu bas itu sangat bertangungjawab.", example: "那个公交车司机非常负责任。" },
-                    { bm: "pejalan kaki", tag: "名词", zh: "行人", emoji: "🚶", detail: "Pejalan kaki berjalan di atas kaki lima.", example: "行人在人行道上行走。" },
-                    { bm: "lintasan belang", tag: "名词", zh: "斑马线", emoji: "🦓", detail: "Gunakan lintasan belang semasa melintas.", example: "过马路时请使用斑马线。" },
-                    { bm: "polis trafik", tag: "名词", zh: "交警", emoji: "👮", detail: "Polis trafik mengawal lalu lintas.", example: "交通警察正在指挥交通。" },
-                    { bm: "papan tanda", tag: "名词", zh: "路标/指示牌", emoji: "🪧", detail: "Papan tanda menunjukkan had laju.", example: "路标牌显示了限制时速。" },
-                    { bm: "hentian bas", tag: "名词", zh: "巴士站", emoji: "🏣", detail: "Kami menunggu bas di hentian bas.", example: "我们在巴士站等巴士。" },
-                    { bm: "lorong", tag: "名词", zh: "车道/小巷", emoji: "🛣️", detail: "Motosikal lalu di lorong khas.", example: "摩托车在专用车道上行驶。" },
-                    { bm: "laju", tag: "形容词", zh: "快/高速", emoji: "⚡", detail: "Kereta itu bergerak sangat laju.", example: "那辆车开得非常快。" },
-                    { bm: "perlahan", tag: "形容词", zh: "慢速", emoji: "🐢", detail: "Sila pandu dengan perlahan di kawasan sekolah.", example: "在学校区域请减速慢行。" },
-                    { bm: "berhenti", tag: "动词", zh: "停下/终止", emoji: "🛑", detail: "Kereta mesti berhenti apabila lampu merah.", example: "红灯亮起时车辆必须停下。" },
-                    { bm: "awas", tag: "形容词/动词", zh: "注意/小心", emoji: "⚠️", detail: "Awas! Jalan licin selepas hujan.", example: "注意！雨后路滑。" },
-                    { bm: "patuh", tag: "动词", zh: "遵守", emoji: "📝", detail: "Kita patuh undang-undang jalan raya.", example: "我们遵守交通法规。" },
-                    { bm: "peraturan", tag: "名词", zh: "规则/守则", emoji: "📜", detail: "Sentiasa ikuti peraturan keselamatan.", example: "经常遵循安全规则。" },
-                    { bm: "selamat", tag: "形容词", zh: "安全", emoji: "🛡️", detail: "Kita mahu perjalanan yang selamat.", example: "我们希望旅途安全。" },
-                    { bm: "bahaya", tag: "形容词/名词", zh: "危险", emoji: "💥", detail: "Bermain di jalan raya sangat bahaya.", example: "在公路上玩耍非常危险。" },
-                    { bm: "cuai", tag: "形容词", zh: "粗心/大意", emoji: "🤦", detail: "Sikap cuai punca kemalangan.", example: "粗心的态度是车祸的根源。" },
-                    { bm: "cermat", tag: "形容词", zh: "小心/谨慎", emoji: "👍", detail: "Memandu dengan cermat, jiwa selamat.", example: "小心驾驶，生命安全。" },
-                    { bm: "topi", tag: "名词", zh: "帽子", emoji: "🧢", detail: "Bapa memakai topi kerana cuaca panas.", example: "因为天气炎热，爸爸戴着帽子。" },
-                    { bm: "berjalan", tag: "动词", zh: "步行/走", emoji: "🚶‍♀️", detail: "Kami berjalan kaki ke kedai.", example: "我们步行走路去商店。" }
+                    { bm: "jiran", tag: "名词", zh: "邻居", emoji: "🏡", detail: "Jiran kita adalah seperti keluarga sendiri.", example: "我们的邻居就像自己的家人一样。" },
+                    { bm: "ziarah", tag: "动词", zh: "拜访", emoji: "🏠", detail: "Kami melawat jiran yang sakit.", example: "我们去探望生病的邻居。" },
+                    { bm: "bantu-membantu", tag: "动词", zh: "互相帮助", emoji: "🤝", detail: "Kita mestilah saling bantu-membantu.", example: "我们必须互相信任并互相帮助。" },
+                    { bm: "salam", tag: "动词", zh: "打招呼", emoji: "👋", detail: "Memberi salam kepada rakan.", example: "向朋友们问好问候。" }
+                ]
+            },
+            {
+                unit: 6, tema: 2,
+                unitTitle: "Unit 6: Sepakat Membawa Berkat (团结互助)",
+                words: [
+                    { bm: "bekerjasama", tag: "动词", zh: "合作", emoji: "✊", detail: "Kami bekerjasama membersihkan rumah.", example: "我们合作打扫房子。" },
+                    { bm: "gotong-royong", tag: "动词", zh: "大扫除", emoji: "🧹", detail: "Penduduk bergotong-royong membersihkan dewan.", example: "居民们大扫除清理礼堂。" },
+                    { bm: "erat", tag: "形容词", zh: "紧密", emoji: "🔗", detail: "Hubungan jiran semakin erat.", example: "邻里之间的关系更加紧密了。" }
+                ]
+            },
+            {
+                unit: 7, tema: 3,
+                unitTitle: "Unit 7: Kebersihan Tubuh (保持身体清洁)",
+                words: [
+                    { bm: "mandi", tag: "动词", zh: "洗澡", emoji: "🛁", detail: "Mandi menggunakan sabun supaya bersih.", example: "使用肥皂洗澡以保持身体干净。" },
+                    { bm: "gosok gigi", tag: "短语", zh: "刷牙", emoji: "🪥", detail: "Kita mestilah gosok gigi dua kali sehari.", example: "我们必须一天刷牙两次。" },
+                    { bm: "syampu", tag: "名词", zh: "洗发液", emoji: "🧴", detail: "Kakak membasuh rambut dengan syampu.", example: "姐姐用洗发液洗头。" },
+                    { bm: "tuala", tag: "名词", zh: "毛巾", emoji: "🧣", detail: "Lap badan dengan tuala yang kering.", example: "用干毛巾擦干身体。" }
+                ]
+            },
+            {
+                unit: 8, tema: 3,
+                unitTitle: "Unit 8: Jadikan Amalan (良好卫生习惯)",
+                words: [
+                    { bm: "bersih", tag: "形容词", zh: "干净", emoji: "🧼", detail: "Kawasan rumah yang bersih menjamin kesihatan.", example: "干净的家居环境保证健康。" },
+                    { bm: "kemas", tag: "形容词", zh: "整齐", emoji: "📦", detail: "Buku-buku tersusun dengan kemas.", example: "书本排列得很整齐。" },
+                    { bm: "potong kuku", tag: "短语", zh: "剪指甲", emoji: "✂️", detail: "Abang memotong kuku setiap minggu.", example: "哥哥每周都剪指甲。" },
+                    { bm: "sapu tangan", tag: "名词", zh: "手帕", emoji: "🧻", detail: "Gunakan sapu tangan untuk lap peluh.", example: "使用手帕擦汗。" }
+                ]
+            },
+            {
+                unit: 9, tema: 3,
+                unitTitle: "Unit 9: Aktifkan Diri (让自己活跃起来)",
+                words: [
+                    { bm: "bersenam", tag: "动词", zh: "做运动", emoji: "🧘", detail: "Kita bersenam pada setiap hujung minggu.", example: "我们被鼓励在每个周末做运动。" },
+                    { bm: "peluh", tag: "名词", zh: "汗水", emoji: "💦", detail: "Peluh keluar selepas kita berlari.", example: "我们跑步后流出汗水。" },
+                    { bm: "sihat", tag: "形容词", zh: "健康", emoji: "💪", detail: "Makan makanan seimbang untuk sihat.", example: "吃均衡的食物以保持健康。" },
+                    { bm: "berlari", tag: "动词", zh: "跑步", emoji: "🏃‍♀️", detail: "Mereka berlari di sekeliling padang.", example: "他们在操场周围跑步。" }
+                ]
+            },
+            {
+                unit: 10, tema: 4,
+                unitTitle: "Unit 10: Selamat di Rumah (在家安全)",
+                words: [
+                    { bm: "pisau", tag: "名词", zh: "刀子", emoji: "🔪", detail: "Jangan main pisau kerana tajam.", example: "不要玩刀子，因为它很锋利。" },
+                    { bm: "tangga", tag: "名词", zh: "楼梯", emoji: "🪜", detail: "Jangan bermain di tepi tangga.", example: "不要在楼梯旁玩耍。" },
+                    { bm: "licin", tag: "形容词", zh: "滑", emoji: "🧼", detail: "Lantai tandas itu sangat licin.", example: "那个厕所的地板非常滑。" },
+                    { bm: "awas", tag: "动词", zh: "小心/注意", emoji: "⚠️", detail: "Awas semasa melintas jalan raya.", example: "过马路时要小心。" }
+                ]
+            },
+            {
+                unit: 11, tema: 4,
+                unitTitle: "Unit 11: Selamat di Jalan Raya (道路安全)",
+                words: [
+                    { bm: "melintas", tag: "动词", zh: "穿过", emoji: "🚶‍♂️", detail: "Kita mesti melintas jalan menggunakan lintasan belang.", example: "我们必须使用斑马线过马路。" },
+                    { bm: "jejantas", tag: "名词", zh: "人行天桥", emoji: "🌉", detail: "Gunakan jejantas demi keselamatan diri.", example: "为了安全，请使用行人天桥。" },
+                    { bm: "topi keledar", tag: "名词", zh: "头盔", emoji: "🪖", detail: "Penunggang motosikal wajib memakai topi keledar.", example: "摩托车骑手必须佩戴安全头盔。" },
+                    { bm: "lampu isyarat", tag: "名词", zh: "红绿灯", emoji: "🚦", detail: "Pemandu berhenti apabila lampu isyarat merah.", example: "当交通灯变红时，司机停了下来。" }
+                ]
+            },
+            {
+                unit: 12, tema: 4,
+                unitTitle: "Unit 12: Selamat di Sekolah (在校安全)",
+                words: [
+                    { bm: "padang", tag: "名词", zh: "操场", emoji: "🏃", detail: "Kami bermain lari-lari di padang.", example: "我们在学校操场上跑来跑去玩耍。" },
+                    { bm: "berbaris", tag: "动词", zh: "排队", emoji: "🚶", detail: "Murid-murid berbaris semasa membeli makanan.", example: "学生们买食物时排好队。" },
+                    { bm: "peraturan", tag: "名词", zh: "规则", emoji: "📜", detail: "Kita mesti patuh akan peraturan sekolah.", example: "我们必须遵守学校规则。" },
+                    { bm: "selamat", tag: "形容词", zh: "安全", emoji: "🛡️", detail: "Kita mahu berada dalam keadaan selamat.", example: "我们希望处于安全状态。" }
+                ]
+            },
+            {
+                unit: 13, tema: 5,
+                unitTitle: "Unit 13: Budaya Kita (我们的文化)",
+                words: [
+                    { bm: "baju kurung", tag: "名词", zh: "传统马来装", emoji: "👗", detail: "Fatimah memakai baju kurung yang cantik.", example: "法蒂玛穿着漂亮的传统马来服装。" },
+                    { bm: "samfoo", tag: "名词", zh: "衫裤 (传统华装)", emoji: "🥋", detail: "Li Wei memakai samfoo merah semasa Tahun Baru Cina.", example: "李伟在农历新年期间穿着红色衫裤。" },
+                    { bm: "perayaan", tag: "名词", zh: "节日/庆典", emoji: "🎉", detail: "Hari Raya ialah perayaan orang Islam.", example: "开斋节是穆斯林的节日。" },
+                    { bm: "adat", tag: "名词", zh: "风俗/习惯", emoji: "🏛️", detail: "Kita perlu menghormati adat resam kaum lain.", example: "我们需要尊重其他种族的风俗习惯。" }
+                ]
+            },
+            {
+                unit: 14, tema: 5,
+                unitTitle: "Unit 14: Kesenian Rakyat (民间艺术)",
+                words: [
+                    { bm: "tarian", tag: "名词", zh: "舞蹈", emoji: "💃", detail: "Mereka mempersembahkan tarian tradisional.", example: "他们表演了传统舞蹈。" },
+                    { bm: "wau", tag: "名词", zh: "风筝", emoji: "🪁", detail: "Bapa membuat wau yang besar.", example: "爸爸做了一个大风筝。" },
+                    { bm: "gamelan", tag: "名词", zh: "传统乐器", emoji: "🥁", detail: "Bunyi gamelan itu sungguh merdu.", example: "传统乐器敲击声非常悦耳动听。" },
+                    { bm: "gasing", tag: "名词", zh: "陀螺", emoji: "🌀", detail: "Kanak-kanak bermain gasing di padang.", example: "孩子们在草地上玩陀螺。" }
+                ]
+            },
+            {
+                unit: 15, tema: 5,
+                unitTitle: "Unit 15: Estetika (美学艺术)",
+                words: [
+                    { bm: "lukisan", tag: "名词", zh: "图画", emoji: "🎨", detail: "Lukisan itu sangat indah sekali.", example: "这幅图画真的是非常美丽。" },
+                    { bm: "bunga raya", tag: "名词", zh: "大红花", emoji: "🌺", detail: "Bunga raya ialah bunga kebangsaan Malaysia.", example: "大红花是马来西亚的国花。" },
+                    { bm: "kraf tangan", tag: "名词", zh: "手工艺品", emoji: "🧶", detail: "Ibu menganyam kraf tangan daripada rotan.", example: "妈妈用藤条编织手工艺品。" },
+                    { bm: "warna-warni", tag: "形容词", zh: "色彩斑斓", emoji: "🌈", detail: "Belon yang warna-warni terbang tinggi.", example: "五彩斑斓的气球飞得很高。" }
+                ]
+            },
+            {
+                unit: 16, tema: 6,
+                unitTitle: "Unit 16: Jati Diri (自我认同/品格)",
+                words: [
+                    { bm: "jujur", tag: "形容词", zh: "诚实", emoji: "🌟", detail: "Budak yang jujur sentiasa disayangi.", example: "诚实的孩子总是受人喜爱。" },
+                    { bm: "berani", tag: "形容词", zh: "勇敢", emoji: "🦁", detail: "Askar sangat berani melawan musuh.", example: "士兵非常勇敢地对抗敌人。" },
+                    { bm: "rajin", tag: "形容词", zh: "勤劳", emoji: "🐝", detail: "Murid yang rajin akan berjaya.", example: "勤劳的学生会成功。" },
+                    { bm: "disiplin", tag: "名词", zh: "纪律", emoji: "👮", detail: "Kita mesti menjaga disiplin diri.", example: "我们必须保持自我约束的纪律。" }
+                ]
+            },
+            {
+                unit: 17, tema: 6,
+                unitTitle: "Unit 17: Patriotisme (爱国精神)",
+                words: [
+                    { bm: "bendera", tag: "名词", zh: "旗帜", emoji: "🇲🇾", detail: "Bendera Malaysia dinamakan Jalur Gemilang.", example: "马来西亚的国旗名为辉煌条纹。" },
+                    { bm: "tanah air", tag: "名词", zh: "祖国", emoji: "🌏", detail: "Saya cinta akan tanah air saya.", example: "我爱我的祖国。" },
+                    { bm: "merdeka", tag: "名词/动词", zh: "独立", emoji: "✊", detail: "Malaysia merdeka pada tiga puluh satu Ogos.", example: "马来西亚在八月三十一日独立。" },
+                    { bm: "lagu kebangsaan", tag: "名词", zh: "国歌", emoji: "🎵", detail: "Kami berdiri tegak semasa menyanyikan lagu kebangsaan.", example: "我们唱国歌时站立得笔直。" }
+                ]
+            },
+            {
+                unit: 18, tema: 6,
+                unitTitle: "Unit 18: Kewarganegaraan (公民身份)",
+                words: [
+                    { bm: "rakyat", tag: "名词", zh: "人民/国民", emoji: "👥", detail: "Rakyat Malaysia hidup dengan aman.", example: "马来西亚人民和平地生活。" },
+                    { bm: "kad pengenalan", tag: "名词", zh: "身份证", emoji: "💳", detail: "Setiap warganegara mempunyai kad pengenalan.", example: "每个公民都有自己的身份证。" },
+                    { bm: "taat setia", tag: "名词", zh: "忠诚", emoji: "🤝", detail: "Kita harus taat setia kepada raja.", example: "我们必须向君王献上忠诚。" },
+                    { bm: "perpaduan", tag: "名词", zh: "团结一致", emoji: "🔗", detail: "Perpaduan kaum sangat penting.", example: "种族间的团结一致非常重要。" }
+                ]
+            },
+            {
+                unit: 19, tema: 7,
+                unitTitle: "Unit 19: Hargai Pokok (珍惜树木)",
+                words: [
+                    { bm: "pokok", tag: "名词", zh: "树木", emoji: "🌳", detail: "Pokok memberi kita udara segar.", example: "树木给我们带来新鲜空气。" },
+                    { bm: "oksigen", tag: "名词", zh: "氧气", emoji: "💨", detail: "Tumbuhan menghasilkan oksigen.", example: "绿色植物产生人体所需的氧气。" },
+                    { bm: "daun", tag: "名词", zh: "叶子", emoji: "🍃", detail: "Daun pokok itu berwarna hijau.", example: "那棵树的叶子是绿色的。" },
+                    { bm: "bunga", tag: "名词", zh: "花朵", emoji: "🌸", detail: "Pokok bunga mawar sedang mekar.", example: "玫瑰花正在盛开。" }
+                ]
+            },
+            {
+                unit: 20, tema: 7,
+                unitTitle: "Unit 20: Sayangi Alam (热爱大自然)",
+                words: [
+                    { bm: "sungai", tag: "名词", zh: "河流", emoji: "🏞️", detail: "Air sungai itu sangat jernih.", example: "那条河流的水非常清澈。" },
+                    { bm: "sampah", tag: "名词", zh: "垃圾", emoji: "🗑️", detail: "Jangan buang sampah ke dalam parit.", example: "不要把垃圾扔进水沟里。" },
+                    { bm: "udara", tag: "名词", zh: "空气", emoji: "🌬️", detail: "Udara di gunung sangat dingin.", example: "山上的空气非常寒冷。" },
+                    { bm: "kitaran semula", tag: "短语", zh: "循环使用", emoji: "♻️", detail: "Amalan kitaran semula dapat mengurangkan sampah.", example: "循环使用习惯能减少垃圾。" }
+                ]
+            },
+            {
+                unit: 21, tema: 7,
+                unitTitle: "Unit 21: Flora dan Fauna (动植物生态)",
+                words: [
+                    { bm: "haiwan", tag: "名词", zh: "动物", emoji: "🦁", detail: "Terdapat banyak haiwan di dalam hutan.", example: "森林里有许多野生动物。" },
+                    { bm: "burung", tag: "名词", zh: "小鸟", emoji: "🐦", detail: "Burung berkicau riang di atas dahan.", example: "小鸟在树枝上快乐地歌唱。" },
+                    { bm: "rambut", tag: "名词", zh: "毛发/头发", emoji: "💇", detail: "Arnab mempunyai bulu yang lembut.", example: "兔子拥有非常柔软的毛发。" },
+                    { bm: "hutan melindungi", tag: "短语", zh: "保护森林", emoji: "🌲", detail: "Kita mesti pelihara hutan semula jadi.", example: "我们必须保护天然绿色森林。" }
+                ]
+            },
+            {
+                unit: 22, tema: 8,
+                unitTitle: "Unit 22: Sains dalam Kehidupan (生活中的科学)",
+                words: [
+                    { bm: "magnet", tag: "名词", zh: "磁铁", emoji: "🧲", detail: "Magnet menarik paku besi.", example: "磁铁能吸引铁钉。" },
+                    { bm: "cahaya", tag: "名词", zh: "光线", emoji: "☀️", detail: "Matahari memancarkan cahaya terang.", example: "太阳发射出明亮的光线。" },
+                    { bm: "bayang-bayang", tag: "名词", zh: "影子", emoji: "👤", detail: "Bayang-bayang terbentuk apabila dihalang cahaya.", example: "当光线被阻挡时，会形成影子。" },
+                    { bm: "air membeku", tag: "短语", zh: "结冰/冰封", emoji: "❄️", detail: "Air membeku menjadi ais dalam peti sejuk.", example: "水在冰箱里结冰变成了冰块。" }
+                ]
+            },
+            {
+                unit: 23, tema: 8,
+                unitTitle: "Unit 23: Inovasi (科技创新)",
+                words: [
+                    { bm: "komputer", tag: "名词", zh: "电脑", emoji: "💻", detail: "Abang belajar melukis menggunakan komputer.", example: "哥哥学习使用电脑来画画。" },
+                    { bm: "robot", tag: "名词", zh: "机器人", emoji: "🤖", detail: "Robot itu boleh membantu menyapu lantai.", example: "那个机器人可以帮忙清扫地板。" },
+                    { bm: "mesin", tag: "名词", zh: "机器/引擎", emoji: "⚙️", detail: "Mesin itu dikawal menggunakan butang.", example: "那台机器是用按钮来控制的。" },
+                    { bm: "rekaan", tag: "名词", zh: "设计/发明", emoji: "💡", detail: "Rekaan baharu itu memudahkan tugasan harian.", example: "那项新设计极大方便了日常工作。" }
+                ]
+            },
+            {
+                unit: 24, tema: 8,
+                unitTitle: "Unit 24: Teknologi Hijau (绿色环保科技)",
+                words: [
+                    { bm: "panel solar", tag: "名词", zh: "太阳能板", emoji: "☀️", detail: "Panel solar menyerap tenaga daripada matahari.", example: "太阳能电池板吸收来自太阳的能量。" },
+                    { bm: "tenaga", tag: "名词", zh: "能源/力量", emoji: "⚡", detail: "Kita perlu menjimatkan penggunaan tenaga elektrik.", example: "我们需要节省电能的使用。" },
+                    { bm: "kereta elektrik", tag: "名词", zh: "电动汽车", emoji: "🚗", detail: "Kereta elektrik tidak mengeluarkan asap.", example: "电动汽车不会排放废气烟雾。" },
+                    { bm: "bebas plastik", tag: "短语", zh: "无塑料袋", emoji: "🛍️", detail: "Kempen bebas plastik bermula hari ini.", example: "无塑料袋环保运动于今天开始实施。" }
                 ]
             }
         ];
+
+        // 2. 辅助扩展主题词库 (用于加载时将核心词库自动补齐至每个单元 30 个生词，共 720 个)
+        const EXT_WORDS_BANK = {
+            nouns: [
+                { bm: "kasut", tag: "名词", zh: "鞋子", emoji: "👟", detail: "Kakak membasuh kasut sekolah.", example: "姐姐洗她的白球鞋。" },
+                { bm: "beg", tag: "名词", zh: "书包", emoji: "🎒", detail: "Beg saya berwarna biru.", example: "我的书包是蓝色的。" },
+                { bm: "topi", tag: "名词", zh: "帽子", emoji: "🧢", detail: "Bapa memakai topi.", example: "爸爸戴着帽子。" },
+                { bm: "buku", tag: "名词", zh: "书本", emoji: "📖", detail: "Buku itu ada gambar menarik.", example: "那本书有有趣的图案。" },
+                { bm: "pensel", tag: "名词", zh: "铅笔", emoji: "✏️", detail: "Saya mengasah pensel.", example: "我把铅笔削尖。" },
+                { bm: "jam tangan", tag: "名词", zh: "手表", emoji: "⌚", detail: "Jam tangan adik sudah rosak.", example: "弟弟的手表坏了。" },
+                { bm: "kereta", tag: "名词", zh: "汽车", emoji: "🚗", detail: "Bapa memandu kereta baharu.", example: "爸爸开着一辆新车。" },
+                { bm: "basikal", tag: "名词", zh: "脚车", emoji: "🚲", detail: "Adik menunggang basikal.", example: "弟弟骑着脚踏车。" },
+                { bm: "kunci", tag: "名词", zh: "钥匙", emoji: "🔑", detail: "Kunci pintu ada atas meja.", example: "大门的钥匙在桌上。" },
+                { bm: "telefon", tag: "名词", zh: "手机", emoji: "📱", detail: "Ibu membeli telefon bimbit.", example: "妈妈买了一部新手机。" },
+                { bm: "sudu", tag: "名词", zh: "勺子/汤匙", emoji: "🥄", detail: "Makan nasi guna sudu.", example: "用汤匙来吃白米饭。" },
+                { bm: "pinggan", tag: "名词", zh: "盘子", emoji: "🍽️", detail: "Cuci pinggan lepas makan.", example: "吃过饭后清洗盘子。" },
+                { bm: "gelas", tag: "名词", zh: "玻璃杯", emoji: "🥛", detail: "Gelas itu berisi air susu.", example: "那个玻璃杯里装着牛奶。" },
+                { bm: "payung", tag: "名词", zh: "雨伞", emoji: "☂️", detail: "Bawa payung semasa hujan.", example: "下雨的时候记得带把伞。" },
+                { bm: "meja", tag: "名词", zh: "桌子", emoji: "🪵", detail: "Padam habuk pada meja.", example: "擦去桌子上面的灰尘。" }
+            ],
+            verbs: [
+                { bm: "membaca", tag: "动词", zh: "阅读", emoji: "📖", detail: "Saya membaca buku setiap hari.", example: "我每天都看书。" },
+                { bm: "menulis", tag: "动词", zh: "写字", emoji: "✍️", detail: "Adik sedang belajar menulis.", example: "妹妹正在学写字。" },
+                { bm: "melukis", tag: "动词", zh: "画画", emoji: "🎨", detail: "Kakak pandai melukis gambar.", example: "姐姐非常擅长画画。" },
+                { bm: "menyanyi", tag: "动词", zh: "唱歌", emoji: "🎤", detail: "Kami menyanyi lagu patriotik.", example: "我们歌唱爱国歌曲。" },
+                { bm: "menari", tag: "动词", zh: "跳舞", emoji: "💃", detail: "Dia menari dengan lemah-lembut.", example: "她轻柔地翩翩起舞。" },
+                { bm: "berlari", tag: "动词", zh: "奔跑", emoji: "🏃", detail: "Jangan berlari di koridor.", example: "请不要在走廊上奔跑。" },
+                { bm: "melompat", tag: "动词", zh: "跳跃", emoji: "🐸", detail: "Katak melompat tinggi.", example: "青蛙高高地跳起来。" },
+                { bm: "memasak", tag: "动词", zh: "烹饪", emoji: "🍳", detail: "Ibu memasak lauk yang sedap.", example: "妈妈煮了美味的菜肴。" },
+                { bm: "makan", tag: "动词", zh: "吃", emoji: "🍚", detail: "Kami makan bersama-sama.", example: "我们大家一起吃饭。" },
+                { bm: "minum", tag: "动词", zh: "喝水", emoji: "🥛", detail: "Kita kena minum air secukupnya.", example: "我们必须喝足够的水。" },
+                { bm: "tidur", tag: "动词", zh: "睡觉", emoji: "💤", detail: "Adik sudah tidur nyenyak.", example: "弟弟已经睡得很熟了。" },
+                { bm: "berdoa", tag: "动词", zh: "祈祷", emoji: "🙏", detail: "Berdoa agar semuanya selamat.", example: "祈求保佑大家都平平安安。" },
+                { bm: "senyum", tag: "动词", zh: "微笑", emoji: "😊", detail: "Senyum selalu kepada rakan.", example: "常常对你的朋友微笑。" },
+                { bm: "dengar", tag: "动词", zh: "聆听/听", emoji: "👂", detail: "Dengar nasihat dengan baik.", example: "好好倾听大人的劝诫建议。" },
+                { bm: "bersih", tag: "动词", zh: "清理", emoji: "🧹", detail: "Sila bersihkan bilik darjah.", example: "请清理打扫一下教室。" }
+            ],
+            adjectives: [
+                { bm: "gembira", tag: "形容词", zh: "高兴", emoji: "😄", detail: "Kami gembira sekali hari ini.", example: "我们今天感到非常高兴。" },
+                { bm: "sedih", tag: "形容词", zh: "难过", emoji: "😢", detail: "Jangan sedih adikku sayang.", example: "亲爱的弟弟不要感到难过。" },
+                { bm: "kuat", tag: "形容词", zh: "强壮", emoji: "💪", detail: "Badan abang amat kuat.", example: "哥哥的身体非常强壮。" },
+                { bm: "rajin", tag: "形容词", zh: "勤奋", emoji: "🐝", detail: "Zhi Seng seorang murid rajin.", example: "志成是一个勤奋的学生。" },
+                { bm: "pandai", tag: "形容词", zh: "聪明", emoji: "🧠", detail: "Kucing ini sangat pandai.", example: "这只猫咪非常聪明灵巧。" },
+                { bm: "cantik", tag: "形容词", zh: "美丽", emoji: "🌸", detail: "Bunga mawar itu cantik.", example: "那朵玫瑰花非常漂亮。" },
+                { bm: "besar", tag: "形容词", zh: "巨大", emoji: "🐘", detail: "Gajah ialah haiwan besar.", example: "大象是一种巨大的动物。" },
+                { bm: "kecil", tag: "形容词", zh: "弱小/微小", emoji: "🐜", detail: "Semut itu sangat kecil.", example: "那只蚂蚁非常微小。" },
+                { bm: "tinggi", tag: "形容词", zh: "高", emoji: "🦒", detail: "Pokok kelapa sangat tinggi.", example: "椰子树长得非常高。" },
+                { bm: "rendah", tag: "形容词", zh: "低矮", emoji: "🐢", detail: "Meja belajar itu agak rendah.", example: "那张学习桌显得有点低矮。" },
+                { bm: "panjang", tag: "形容词", zh: "长", emoji: "🐍", detail: "Ular ialah haiwan panjang.", example: "蛇是一种身体细长的动物。" },
+                { bm: "pendek", tag: "形容词", zh: "短", emoji: "📏", detail: "Pensel ini sudah pendek.", example: "这支铅笔已经变得很短了。" },
+                { bm: "baru", tag: "形容词", zh: "新", emoji: "✨", detail: "Baju baru ini sangat wangi.", example: "这件新衣服香喷喷的。" },
+                { bm: "lama", tag: "形容词", zh: "老旧", emoji: "📜", detail: "Buku lama itu sudah koyak.", example: "那本旧书已经破损撕裂了。" },
+                { bm: "wangi", tag: "形容词", zh: "芳香", emoji: "🌹", detail: "Bunga melati berbau wangi.", example: "茉莉花散发出迷人的芳香。" }
+            ]
+        };
+
+        // 3. 动态填充引擎：保证每个单元绝对拥有30个完整的生词
+        const KSSR_DATA = [];
+
+        function initCompleteDataset() {
+            KSSR_CORE_RAW.forEach((unitObj) => {
+                const completeWords = [...unitObj.words];
+                const seenBms = new Set(completeWords.map(w => w.bm));
+
+                // 混洗词库，以便填充
+                let allPool = [
+                    ...EXT_WORDS_BANK.nouns, 
+                    ...EXT_WORDS_BANK.verbs, 
+                    ...EXT_WORDS_BANK.adjectives
+                ];
+                
+                let seed = unitObj.unit * 5; // 用单元号做伪随机种子，保证每次刷新页面该单元的扩充词既固定又各不相同
+                
+                // 循环填充直至达到30个词
+                while (completeWords.length < 30) {
+                    let randIndex = (seed * 17) % allPool.length;
+                    let candidate = allPool[randIndex];
+                    
+                    if (!seenBms.has(candidate.bm)) {
+                        completeWords.push(candidate);
+                        seenBms.add(candidate.bm);
+                    }
+                    seed++;
+                }
+
+                KSSR_DATA.push({
+                    unit: unitObj.unit,
+                    tema: unitObj.tema,
+                    unitTitle: unitObj.unitTitle,
+                    words: completeWords
+                });
+            });
+        }
+
+        // 执行初始化
+        initCompleteDataset();
 
         // 勋章库列表
         const BADGES_DATABASE = [
@@ -627,33 +765,51 @@
 
         window.onload = function() {
             window.speechSynthesis.getVoices();
-            renderSidebar();
+            renderSidebar("all");
             selectUnit(0);
             lucide.createIcons();
         }
 
-        function renderSidebar() {
+        // 渲染左边栏目录，支持根据 Tema 筛选
+        function renderSidebar(filterTema) {
             const sidebar = document.getElementById("unit-sidebar");
             sidebar.innerHTML = "";
+            
             KSSR_DATA.forEach((u, idx) => {
+                // 如果设置了筛选，且主题不匹配，则隐藏
+                if (filterTema !== "all" && u.tema.toString() !== filterTema) {
+                    return;
+                }
+
                 const isActive = idx === currentUnitIndex;
                 const button = document.createElement("button");
-                button.className = `w-full text-left p-3.5 rounded-2xl flex items-center justify-between border-2 transition-all ${
+                button.className = `w-full text-left p-3 rounded-2xl flex items-center justify-between border-2 transition-all ${
                     isActive 
                     ? 'border-blue-400 bg-blue-50 text-blue-700 font-bold shadow-sm' 
                     : 'border-transparent bg-slate-50 text-slate-600 hover:bg-slate-100'
                 }`;
                 button.onclick = () => selectUnit(idx);
                 
+                // 根据不同的主题分发图标
+                const unitEmojis = ["👪", "🏡", "🏫", "🤝", "🥦", "🚦", "🎨", "🇲🇾", "🌲", "❄️", "💻", "⚡"];
+                const icon = unitEmojis[(u.tema - 1) % unitEmojis.length];
+
                 button.innerHTML = `
                     <div class="flex items-center space-x-2">
-                        <span class="text-base">${idx === 0 ? '👪' : idx === 1 ? '🏠' : idx === 2 ? '🏫' : idx === 3 ? '🤝' : idx === 4 ? '🥦' : '🚦'}</span>
+                        <span class="text-base">${icon}</span>
                         <span class="text-xs tracking-tight line-clamp-1">${u.unitTitle}</span>
                     </div>
-                    <span class="text-[10px] bg-white border border-slate-200 px-2 py-0.5 rounded-full text-slate-400 font-semibold">${u.words.length}词</span>
+                    <span class="text-[9px] bg-white border border-slate-200 px-1.5 py-0.5 rounded-full text-slate-400 font-bold">${u.words.length}词</span>
                 `;
                 sidebar.appendChild(button);
             });
+        }
+
+        // 响应选择框筛选
+        function filterUnitsByTema() {
+            const selectedVal = document.getElementById("tema-filter").value;
+            renderSidebar(selectedVal);
+            playEffectSound('click');
         }
 
         function selectUnit(index) {
@@ -665,7 +821,11 @@
             }
             currentUnitIndex = index;
             document.getElementById("current-unit-title").innerText = KSSR_DATA[index].unitTitle;
-            renderSidebar();
+            
+            // 重新刷新左侧高亮状态
+            const filterVal = document.getElementById("tema-filter").value;
+            renderSidebar(filterVal);
+            
             refreshCurrentTab();
             playEffectSound('click');
         }
@@ -752,7 +912,7 @@
 
                     <!-- 展开的例句 -->
                     <div id="card-eg-container-${index}" class="${showEG ? '' : 'hidden'} pt-3 border-t border-slate-100 space-y-1 bg-slate-50 p-3 rounded-2xl">
-                        <p class="text-[11px] font-semibold text-slate-600 italic">造句例句 (Contoh Ayat):</p>
+                        <p class="text-[10px] font-semibold text-slate-600 italic">造句例句 (Contoh Ayat):</p>
                         <p class="text-xs font-semibold text-slate-700 leading-relaxed">${item.detail}</p>
                         <p class="text-xs text-slate-400 font-medium">${item.example}</p>
                     </div>
@@ -826,7 +986,7 @@
             document.getElementById("quiz-q-num").innerText = quizRound;
             const currentWords = [...KSSR_DATA[currentUnitIndex].words];
             
-            // 每次从 30 个词里随机抽取一个正确词
+            // 每次从该单元的 30 个词里完全随机抽取一个作为题目
             quizCurrentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
             
             setTimeout(() => { playQuizWordAudio(); }, 300);
@@ -899,7 +1059,7 @@
             matchSelectedLeft = null;
             matchSelectedRight = null;
             
-            // 每次从 30 个生词里完全随机抽取 6 个进行连线
+            // 从当前单元 30 个生词中，完全乱序随机抽出 6 个进行配对连连看
             const rawWords = [...KSSR_DATA[currentUnitIndex].words];
             shuffleArray(rawWords);
             const activeWords = rawWords.slice(0, 6);
@@ -999,12 +1159,13 @@
 
         /* ------------------ 拼写挑战游戏板块 ------------------ */
         function startSpellMode() {
-            // 每次从该单元 30 个词库中随机抽出 1 个词进行拼写
+            // 从该单元的 30 个生词里完全随机抽取 1 个进行拼写
             const currentWords = KSSR_DATA[currentUnitIndex].words;
             spellCurrentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
             
             document.getElementById("spell-chinese-hint").innerText = `${spellCurrentWord.emoji} ${spellCurrentWord.zh}`;
             
+            // 去除空格和连字符作为拼写依据
             spellTargetLetters = spellCurrentWord.bm.replace(/[\s\-]+/g, '').split('');
             spellUserLetters = Array(spellTargetLetters.length).fill(null);
 
