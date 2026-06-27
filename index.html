@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二年级国语 KSSR 互动生词学习网 (每单元30生词版)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts for Kids style -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', 'Noto Sans SC', sans-serif;
+            background-color: #f3f8fc; 
+        }
+        .kids-title {
+            font-family: 'Fredoka One', 'Noto Sans SC', sans-serif;
+        }
+        /* 自定义可爱圆润卡片阴影 */
+        .card-neo {
+            box-shadow: 0 6px 0px #e2e8f0;
+            border: 2px solid #cbd5e1;
+            transition: all 0.2s ease;
+        }
+        .card-neo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0px #cbd5e1;
+        }
+        .card-neo:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px #cbd5e1;
+        }
+        .card-active {
+            border-color: #3b82f6 !important;
+            background-color: #eff6ff !important;
+        }
+        /* 气泡漂浮动画 */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        /* 隐藏滚动条但保留功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-700">
+
+    <!-- 顶栏：积分与等级 -->
+    <header class="bg-white border-b-2 border-slate-100 px-6 py-3 shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🇲🇾</span>
+                <span class="font-black text-lg text-blue-600 tracking-wide kids-title">Tahun 2 Bahasa Melayu (30 Perkataan)</span>
+            </div>
+            
+            <!-- 游戏化成长状态 -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-50 border-2 border-amber-300 px-3 py-1 rounded-full flex items-center space-x-1.5 shadow-sm">
+                    <i data-lucide="star" class="w-5 h-5 text-amber-500 fill-amber-300 animate-bounce"></i>
+                    <span id="star-count" class="font-bold text-amber-700">10</span>
+                </div>
+                <div class="bg-purple-50 border-2 border-purple-300 px-3 py-1 rounded-full flex items-center space-x-1.5 shadow-sm">
+                    <i data-lucide="award" class="w-5 h-5 text-purple-600"></i>
+                    <span id="badge-count" class="font-bold text-purple-700">0 勋章</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 核心双栏布局 -->
+    <div class="max-w-7xl w-full mx-auto flex-grow flex flex-col lg:flex-row p-4 gap-6">
+        
+        <!-- 左侧导航栏 -->
+        <aside class="w-full lg:w-72 flex-shrink-0 flex flex-col justify-between gap-4">
+            <div class="bg-white rounded-3xl p-5 border-2 border-slate-100 shadow-sm flex-grow">
+                <!-- 目录头部 -->
+                <div class="flex items-center space-x-2 text-blue-500 font-bold text-lg mb-4 pb-2 border-b-2 border-slate-100">
+                    <i data-lucide="compass" class="w-5 h-5"></i>
+                    <span>目录 (Tema KSSR)</span>
+                </div>
+                
+                <!-- 单元列表 -->
+                <div id="unit-sidebar" class="space-y-2.5 max-h-[300px] lg:max-h-[580px] overflow-y-auto no-scrollbar">
+                    <!-- JS动态渲染单元列表 -->
+                </div>
+            </div>
+
+            <!-- 设计者/登录卡片 -->
+            <div class="bg-white rounded-3xl p-4 border-2 border-slate-100 shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-xl font-bold text-blue-600">👩‍🎓</div>
+                    <div>
+                        <p class="text-xs text-slate-400">Signed in as:</p>
+                        <p id="user-display" class="text-sm font-bold text-slate-700">student@kssr.edu.my</p>
+                        <span class="inline-block bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.2 rounded-md">学生 (STUDENT)</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-400">Designed with ❤️</p>
+                    <p class="text-[11px] font-bold text-slate-500">刘老师 / A.H. Lau</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右侧主学习展示区 -->
+        <main class="flex-grow flex flex-col gap-5">
+            <!-- 单元大标题 -->
+            <div class="bg-gradient-to-r from-blue-500 to-sky-400 text-white p-6 rounded-3xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h2 id="current-unit-title" class="kids-title text-xl md:text-2xl font-black">单元加载中...</h2>
+                    <p class="text-sm text-blue-50 mt-1">跟着刘老师，快乐学习每一课 30 个重要国语生词吧！</p>
+                </div>
+                <div class="flex items-center space-x-2 self-start md:self-auto">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-amber-200 animate-pulse"></i>
+                    <span class="text-xs bg-white/20 px-3 py-1.5 rounded-full font-bold">KSSR Semakan 课程</span>
+                </div>
+            </div>
+
+            <!-- 导航选项卡 -->
+            <div class="flex flex-wrap gap-2.5 border-b-2 border-slate-200 pb-1">
+                <button id="tab-btn-card" onclick="switchMode('card')" class="px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center space-x-2 bg-blue-500 text-white shadow-sm">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    <span>📕 词卡学习</span>
+                </button>
+                <button id="tab-btn-quiz" onclick="switchMode('quiz')" class="px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center space-x-2 bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+                    <i data-lucide="music" class="w-4 h-4"></i>
+                    <span>🎧 听音选词</span>
+                </button>
+                <button id="tab-btn-match" onclick="switchMode('match')" class="px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center space-x-2 bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+                    <i data-lucide="puzzle" class="w-4 h-4"></i>
+                    <span>🧩 词义连连看</span>
+                </button>
+                <button id="tab-btn-spell" onclick="switchMode('spell')" class="px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center space-x-2 bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                    <span>✏️ 拼写游戏</span>
+                </button>
+            </div>
+
+            <!-- 语言控制栏 -->
+            <div id="controls-bar" class="bg-white p-4 rounded-2xl border-2 border-slate-100 flex flex-wrap justify-between items-center gap-3 shadow-sm">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-bold text-slate-400 flex items-center"><i data-lucide="sliders" class="w-3.5 h-3.5 mr-1"></i> 显示选项:</span>
+                    <button onclick="toggleVisibility('bm')" id="opt-bm" class="px-3 py-1 text-xs font-bold rounded-full border bg-blue-50 text-blue-600 border-blue-200">BM (国语)</button>
+                    <button onclick="toggleVisibility('zh')" id="opt-zh" class="px-3 py-1 text-xs font-bold rounded-full border bg-blue-50 text-blue-600 border-blue-200">华语翻译</button>
+                    <button onclick="toggleVisibility('eg')" id="opt-eg" class="px-3 py-1 text-xs font-bold rounded-full border bg-blue-50 text-blue-600 border-blue-200">例句造句</button>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <button id="btn-read-all" onclick="autoReadAll()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center space-x-1.5 active:scale-95 transition-all shadow-sm">
+                        <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                        <span>顺序朗读全单元词汇</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 主内容展示板块容器 -->
+            <div class="flex-grow">
+                
+                <!-- 板块1：词卡学习 -->
+                <div id="view-card" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 max-h-[600px] overflow-y-auto p-1">
+                    <!-- 动态生成词卡 -->
+                </div>
+
+                <!-- 板块2：听音选词 -->
+                <div id="view-quiz" class="hidden bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-sm max-w-xl mx-auto text-center space-y-6">
+                    <div class="space-y-2">
+                        <span class="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-bold">第 <span id="quiz-q-num">1</span> / 5 题</span>
+                        <h3 class="text-slate-500 text-sm">听听看，这是哪个词语的意思？</h3>
+                    </div>
+                    
+                    <!-- 声音播放中心区域 -->
+                    <div class="py-8 bg-purple-50 rounded-2xl border border-purple-100 relative">
+                        <button onclick="playQuizWordAudio()" class="w-20 h-20 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto shadow-md hover:scale-105 active:scale-95 transition-all">
+                            <i data-lucide="volume-2" class="w-10 h-10"></i>
+                        </button>
+                        <p class="text-xs text-purple-400 mt-2">点击大喇叭播放发音</p>
+                    </div>
+
+                    <!-- 4个选项按钮 -->
+                    <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 板块3：词义连连看 -->
+                <div id="view-match" class="hidden space-y-4">
+                    <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-2xl text-xs text-emerald-800 text-center flex items-center justify-center space-x-2">
+                        <span>💡 <b>规则：</b>点击左侧的国语单词，再点击右侧对应的华语意思进行配对。连对即可消除！每次练习都自动生成全新的随机题目！</span>
+                        <button onclick="startMatchMode()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-3 py-1 rounded-lg">换一组题 🔄</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch pt-2">
+                        <!-- 左列：国语卡片 -->
+                        <div class="space-y-3">
+                            <p class="text-center font-bold text-slate-400 text-xs tracking-wider">Perkataan BM (国语生词)</p>
+                            <div id="match-left" class="space-y-3"></div>
+                        </div>
+                        <!-- 右列：华语卡片 -->
+                        <div class="space-y-3">
+                            <p class="text-center font-bold text-slate-400 text-xs tracking-wider">Maksud Cina (华语意思)</p>
+                            <div id="match-right" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 板块4：拼写游戏 -->
+                <div id="view-spell" class="hidden bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-sm max-w-xl mx-auto text-center space-y-6">
+                    <div class="space-y-1">
+                        <span class="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-bold">拼写挑战 (Spelling)</span>
+                        <h3 id="spell-chinese-hint" class="text-xl font-bold text-slate-800 pt-2">华语释义提示</h3>
+                    </div>
+
+                    <!-- 拼写区域 -->
+                    <div class="p-6 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 min-h-[80px] flex items-center justify-center flex-wrap gap-2" id="spell-slots-container">
+                        <!-- 槽位 -->
+                    </div>
+
+                    <!-- 提示及播放语音 -->
+                    <div class="flex justify-center items-center space-x-3">
+                        <button onclick="playSpellWordAudio()" class="bg-amber-500 hover:bg-amber-600 text-white p-3 rounded-full shadow-sm">
+                            <i data-lucide="volume-2" class="w-5 h-5"></i>
+                        </button>
+                        <span class="text-xs text-slate-400">听发音拼出正确的国语词汇</span>
+                    </div>
+
+                    <!-- 候选字母球 -->
+                    <div id="spell-letter-pool" class="flex justify-center flex-wrap gap-3 py-4">
+                        <!-- 动态生成的字母气泡 -->
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="resetSpellCurrent()" class="text-xs font-bold text-rose-500 bg-rose-50 hover:bg-rose-100 px-4 py-2 rounded-xl transition-all">
+                            换一个词 🔄
+                        </button>
+                        <button onclick="checkSpelling()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm px-6 py-2.5 rounded-xl active:scale-95 transition-all shadow-md">
+                            检查拼写 ✔
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- 成功勋章弹出框 -->
+    <div id="success-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center border-4 border-amber-400 shadow-2xl transform scale-90 transition-all duration-300" id="modal-content">
+            <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-amber-400 floating">
+                <i data-lucide="party-popper" class="w-12 h-12 text-amber-500 fill-amber-300"></i>
+            </div>
+            <h3 class="kids-title text-2xl font-bold text-slate-800 mb-2">Tahniah! 太棒了！</h3>
+            <p class="text-slate-500 text-sm mb-4">你顺利完成了此项挑战！由于你的出色表现，你获得了：</p>
+            
+            <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5 mb-6 flex items-center justify-center space-x-3">
+                <i data-lucide="star" class="w-8 h-8 text-amber-500 fill-amber-300 animate-bounce"></i>
+                <span class="text-2xl font-black text-amber-600">+10 颗星星</span>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-xs text-slate-400 mb-2 uppercase tracking-wider font-bold">新解锁的勋章</p>
+                <div class="inline-flex flex-col items-center justify-center p-3 bg-purple-50 rounded-2xl border-2 border-purple-200">
+                    <span id="unlocked-badge-emoji" class="text-3xl mb-1">🐯</span>
+                    <span id="unlocked-badge-name" class="text-xs font-bold text-purple-700">机灵老虎勋章</span>
+                </div>
+            </div>
+
+            <button onclick="closeModal()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3.5 rounded-2xl shadow-md border-b-4 border-blue-700 active:border-b-0 active:translate-y-1 transition-all">
+                继续学习 (Seterusnya)
+            </button>
+        </div>
+    </div>
+
+    <!-- 自定义信息提示浮窗 -->
+    <div id="toast-msg" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800/90 text-white text-sm font-bold px-6 py-3 rounded-full shadow-xl z-50 flex items-center space-x-2 opacity-0 pointer-events-none transition-all duration-300">
+        <span id="toast-text">提示内容</span>
+    </div>
+
+    <!-- 底部页脚 -->
+    <footer class="bg-white border-t border-slate-100 py-6 mt-12 text-center text-xs text-slate-400">
+        <div class="max-w-5xl mx-auto px-4 space-y-1.5">
+            <p>二年级国语 KSSR Semakan 趣味生词学习园地 &copy; 2026. 专为大马小学生量身定制.</p>
+            <p>💡 提示：本程序支持朗读，如果听不到声音，请检查音量并确保您的浏览器支持 Text-to-Speech (TTS) 音声合成引擎。</p>
+        </div>
+    </footer>
+
+    <script>
+        // 内置二年级国语 KSSR 核心生词数据 (每个单元精准30个，总计180词)
+        const KSSR_DATA = [
+            {
+                unit: 1,
+                unitTitle: "单元 1: Keluarga Saya (我的家庭)",
+                words: [
+                    { bm: "bapa", tag: "名词", zh: "爸爸", emoji: "👨", detail: "Bapa saya rajin bekerja.", example: "我的爸爸工作很勤劳。" },
+                    { bm: "ibu", tag: "名词", zh: "妈妈", emoji: "👩", detail: "Ibu sedang memasak di dapur.", example: "妈妈正在厨房里煮饭。" },
+                    { bm: "abang", tag: "名词", zh: "哥哥", emoji: "👦", detail: "Abang suka bermain bola sepak.", example: "哥哥喜欢踢足球。" },
+                    { bm: "kakak", tag: "名词", zh: "姐姐", emoji: "👧", detail: "Kakak rajin membaca buku cerita.", example: "姐姐勤劳地阅读故事书。" },
+                    { bm: "adik", tag: "名词", zh: "弟弟/妹妹", emoji: "👶", detail: "Adik sedang tidur di dalam buaian.", example: "弟弟/妹妹正在摇篮里睡觉。" },
+                    { bm: "datuk", tag: "名词", zh: "爷爷/外公", emoji: "👴", detail: "Datuk membaca surat khabar di ruang tamu.", example: "爷爷在客厅看报纸。" },
+                    { bm: "nenek", tag: "名词", zh: "奶奶/外婆", emoji: "👵", detail: "Nenek menyiram pokok bunga.", example: "奶奶在给花浇水。" },
+                    { bm: "sepupu", tag: "名词", zh: "堂表兄弟姐妹", emoji: "🧑‍🤝‍🧑", detail: "Saya bermain dengan sepupu pada hari cuti.", example: "我在假期和堂表兄弟姐妹一起玩。" },
+                    { bm: "bapa saudara", tag: "名词", zh: "叔叔/伯伯/舅舅", emoji: "👨‍💼", detail: "Bapa saudara saya seorang guru.", example: "我的叔叔是一位老师。" },
+                    { bm: "ibu saudara", tag: "名词", zh: "阿姨/姑姑/婶婶", emoji: "👩‍💼", detail: "Ibu saudara menjahit baju kebaya.", example: "阿姨正在缝制娘惹传统服装。" },
+                    { bm: "keluarga", tag: "名词", zh: "家庭/家人", emoji: "🏠", detail: "Saya sayang akan keluarga saya.", example: "我爱我的家人。" },
+                    { bm: "sayang", tag: "动词", zh: "疼爱/关爱", emoji: "💖", detail: "Ibu bapa sangat sayang akan anak-anak.", example: "父母非常疼爱孩子们。" },
+                    { bm: "bantu", tag: "动词", zh: "帮助", emoji: "🤝", detail: "Kita perlu bantu ahli keluarga.", example: "我们需要帮助家人。" },
+                    { bm: "gembira", tag: "形容词", zh: "快乐/开心", emoji: "😊", detail: "Kami berasa gembira berkumpul bersama.", example: "我们聚在一起感到非常快乐。" },
+                    { bm: "hormat", tag: "动词", zh: "尊重", emoji: "🙇", detail: "Kita harus hormat kepada orang tua.", example: "我们必须尊重长辈。" },
+                    { bm: "bermanja", tag: "动词", zh: "撒娇", emoji: "🤗", detail: "Adik suka bermanja dengan nenek.", example: "妹妹喜欢跟奶奶撒娇。" },
+                    { bm: "patuh", tag: "形容词", zh: "听话/顺从", emoji: "👼", detail: "Anak yang patuh mendengar nasihat ibu bapa.", example: "听话的孩子听从父母的劝告。" },
+                    { bm: "melawat", tag: "动词", zh: "探望/拜访", emoji: "🚗", detail: "Kami melawat datuk di kampung.", example: "我们回乡探望爷爷。" },
+                    { bm: "berbual", tag: "动词", zh: "聊天/谈话", emoji: "💬", detail: "Bapa berbual dengan jiran.", example: "爸爸正在和邻居聊天。" },
+                    { bm: "berkumpul", tag: "动词", zh: "聚集", emoji: "👪", detail: "Keluarga kami berkumpul di ruang tamu.", example: "我们的家人聚集在客厅里。" },
+                    { bm: "hadiah", tag: "名词", zh: "礼物", emoji: "🎁", detail: "Kakak menerima hadiah hari lahir.", example: "姐姐收到了生日礼物。" },
+                    { bm: "ketawa", tag: "动词", zh: "笑", emoji: "😄", detail: "Adik ketawa mendengar cerita jenaka.", example: "弟弟听了笑话故事哈哈大笑。" },
+                    { bm: "nasihat", tag: "名词", zh: "劝告/教导", emoji: "🗣️", detail: "Saya sentiasa ingat akan nasihat ibu.", example: "我一直牢记妈妈的劝告。" },
+                    { bm: "bekerjasama", tag: "动词", zh: "合作", emoji: "✊", detail: "Kami bekerjasama membersihkan rumah.", example: "我们合作打扫房子。" },
+                    { bm: "bimbing", tag: "动词", zh: "辅导/引导", emoji: "🧑‍🏫", detail: "Abang bimbing adik membuat kerja rumah.", example: "哥哥辅导弟弟做功课。" },
+                    { bm: "taat", tag: "形容词", zh: "孝顺/忠诚", emoji: "🙏", detail: "Kita mesti menjadi anak yang taat.", example: "我们必须成为孝顺的孩子。" },
+                    { bm: "foto", tag: "名词", zh: "照片", emoji: "🖼️", detail: "Foto keluarga digantung pada dinding.", example: "全家福照片挂在墙壁上。" },
+                    { bm: "mesra", tag: "形容词", zh: "和睦/亲密", emoji: "🥰", detail: "Hubungan kekeluargaan kami sangat mesra.", example: "我们的亲情关系非常和睦。" },
+                    { bm: "aman", tag: "形容词", zh: "安宁/和平", emoji: "🕊️", detail: "Kehidupan kami sekeluarga aman dan damai.", example: "我们一家的生活安宁而平和。" },
+                    { bm: "erat", tag: "形容词", zh: "紧密/亲近", emoji: "🔗", detail: "Hubungan adik-beradik sangat erat.", example: "兄弟姐妹之间的关系非常紧密。" }
+                ]
+            },
+            {
+                unit: 2,
+                unitTitle: "单元 2: Rumah Mesra (温馨的家)",
+                words: [
+                    { bm: "ruang tamu", tag: "名词", zh: "客厅", emoji: "🛋️", detail: "Kami sekeluarga menonton televisyen di ruang tamu.", example: "我们一家人在客厅看电视。" },
+                    { bm: "dapur", tag: "名词", zh: "厨房", emoji: "🍳", detail: "Ibu menghidangkan makanan di dapur.", example: "妈妈在厨房里盛放食物。" },
+                    { bm: "bilik tidur", tag: "名词", zh: "卧室/睡房", emoji: "🛏️", detail: "Bilik tidur saya sentiasa bersih.", example: "我的卧室经常保持干净。" },
+                    { bm: "halaman", tag: "名词", zh: "院子", emoji: "🏡", detail: "Bapa menyapu daun kering di halaman.", example: "爸爸在院子里扫枯叶。" },
+                    { bm: "bersih", tag: "形容词", zh: "干净", emoji: "🧼", detail: "Kawasan rumah yang bersih menjamin kesihatan.", example: "干净的家居环境保障健康。" },
+                    { bm: "kemas", tag: "形容词", zh: "整齐", emoji: "📦", detail: "Buku-buku tersusun dengan kemas.", example: "书本排列得很整齐。" },
+                    { bm: "sofa", tag: "名词", zh: "沙发", emoji: "🛋️", detail: "Bapa berehat di atas sofa.", example: "爸爸在沙发上休息。" },
+                    { bm: "meja", tag: "名词", zh: "桌子", emoji: "🪵", detail: "Meja itu diperbuat daripada kayu.", example: "那张桌子是用木头做的。" },
+                    { bm: "kerusi", tag: "名词", zh: "椅子", emoji: "🪑", detail: "Sila duduk di atas kerusi ini.", example: "请坐在这张椅子上。" },
+                    { bm: "televisyen", tag: "名词", zh: "电视机", emoji: "📺", detail: "Kami menonton rancangan kartun di televisyen.", example: "我们在电视上看卡通节目。" },
+                    { bm: "kipas", tag: "名词", zh: "风扇", emoji: "🌀", detail: "Kipas angin berpusing dengan laju.", example: "电风扇转得很快。" },
+                    { bm: "lampu", tag: "名词", zh: "电灯", emoji: "💡", detail: "Lampu bilik itu sangat terang.", example: "那个房间的灯非常亮。" },
+                    { bm: "katil", tag: "名词", zh: "床", emoji: "🛌", detail: "Adik melompat di atas katil.", example: "弟弟在床上跳来跳去。" },
+                    { bm: "almari", tag: "名词", zh: "衣柜", emoji: "🚪", detail: "Kakak menyusun baju ke dalam almari.", example: "姐姐把衣服整理放进衣柜里。" },
+                    { bm: "cermin", tag: "名词", zh: "镜子", emoji: "🪞", detail: "Ibu melihat cermin semasa menyisir rambut.", example: "妈妈梳头时看着镜子。" },
+                    { bm: "tingkap", tag: "名词", zh: "窗户", emoji: "🪟", detail: "Abang membuka tingkap pada waktu pagi.", example: "哥哥在早上打开窗户。" },
+                    { bm: "pintu", tag: "名词", zh: "门", emoji: "🚪", detail: "Ketuk pintu sebelum masuk.", example: "进门前请敲门。" },
+                    { bm: "jam", tag: "名词", zh: "钟表", emoji: "⏰", detail: "Jam dinding berbunyi tepat pukul tujuh.", example: "挂钟在七点整准时响起。" },
+                    { bm: "bantal", tag: "名词", zh: "枕头", emoji: "☁️", detail: "Bantal ini sangat lembut.", example: "这个枕头非常柔软。" },
+                    { bm: "selimut", tag: "名词", zh: "被子", emoji: "🧣", detail: "Selimut melindungi badan daripada sejuk.", example: "被子能保护身体免受寒冷。" },
+                    { bm: "bilik air", tag: "名词", zh: "浴室/厕所", emoji: "🚿", detail: "Adik sedang mandi di bilik air.", example: "弟弟正在浴室洗澡。" },
+                    { bm: "sinki", tag: "名词", zh: "洗手盆/水槽", emoji: "🚰", detail: "Cuci tangan di sinki sebelum makan.", example: "吃东西前在洗手盆洗手。" },
+                    { bm: "paip", tag: "名词", zh: "水龙头/水管", emoji: "🚿", detail: "Sila tutup paip air selepas digunakan.", example: "使用后请关闭水龙头。" },
+                    { bm: "sabun", tag: "名词", zh: "肥皂", emoji: "🧼", detail: "Mandi menggunakan sabun supaya wangi.", example: "用肥皂洗澡可以变得香喷喷。" },
+                    { bm: "tuala", tag: "名词", zh: "毛巾", emoji: "🧣", detail: "Lap badan dengan tuala yang kering.", example: "用干毛巾擦干身体。" },
+                    { bm: "longkang", tag: "名词", zh: "沟渠", emoji: "🪵", detail: "Bapa membersihkan longkang di tepi rumah.", example: "爸爸正在清理屋子旁的沟渠。" },
+                    { bm: "menyapu", tag: "动词", zh: "打扫/扫地", emoji: "🧹", detail: "Kakak menyapu sampah di dapur.", example: "姐姐正在厨房里扫地。" },
+                    { bm: "mengelap", tag: "动词", zh: "擦拭", emoji: "🧽", detail: "Adik mengelap meja makan dengan kain.", example: "弟弟用抹布擦拭餐桌。" },
+                    { bm: "membasuh", tag: "动词", zh: "清洗/洗涤", emoji: "🧺", detail: "Ibu membasuh pakaian menggunakan mesin basuh.", example: "妈妈用洗衣机洗衣服。" },
+                    { bm: "susun", tag: "动词", zh: "排列/整理", emoji: "🗂️", detail: "Susun kasut dengan rapi di atas rak.", example: "把鞋子整齐地排列在鞋架上。" }
+                ]
+            },
+            {
+                unit: 3,
+                unitTitle: "单元 3: Sekolah Saya (我的学校)",
+                words: [
+                    { bm: "guru", tag: "名词", zh: "老师", emoji: "👩‍🏫", detail: "Guru sedang mengajar di dalam kelas.", example: "老师正在教室内教学。" },
+                    { bm: "murid", tag: "名词", zh: "学生", emoji: "🎒", detail: "Murid-murid berbaris di tapak perhimpunan.", example: "学生们在周会广场排队。" },
+                    { bm: "perpustakaan", tag: "名词", zh: "图书馆", emoji: "📚", detail: "Kami membaca buku dengan senyap di perpustakaan.", example: "我们在图书馆里安静地看书。" },
+                    { bm: "kantin", tag: "名词", zh: "食堂", emoji: "🍜", detail: "Murid-murid membeli makanan di kantin.", example: "学生们在食堂买食物。" },
+                    { bm: "padang", tag: "名词", zh: "操场", emoji: "🏃", detail: "Kami bermain lari-lari di padang.", example: "我们在学校操场上跑来跑去玩耍。" },
+                    { bm: "papan tulis", tag: "名词", zh: "黑板/白板", emoji: "📋", detail: "Cikgu menulis perkataan di papan tulis.", example: "老师在黑板上写生词。" },
+                    { bm: "kelas", tag: "名词", zh: "教室/班级", emoji: "🚪", detail: "Kelas kami sangat bersih dan ceria.", example: "我们的教室非常干净和美丽。" },
+                    { bm: "meja", tag: "名词", zh: "课桌", emoji: "🪵", detail: "Sila susun meja sebelum pulang.", example: "放学前请整理好课桌。" },
+                    { bm: "kerusi", tag: "名词", zh: "椅子", emoji: "🪑", detail: "Letakkan kerusi di atas meja selepas kelas.", example: "放学后把椅子放在课桌上。" },
+                    { bm: "buku", tag: "名词", zh: "书本", emoji: "📖", detail: "Membaca buku jambatan ilmu.", example: "读书是知识的桥梁。" },
+                    { bm: "pensel", tag: "名词", zh: "铅笔", emoji: "✏️", detail: "Bapa membeli pensel baharu untuk saya.", example: "爸爸给我买了一支新铅笔。" },
+                    { bm: "pemadam", tag: "名词", zh: "橡皮擦", emoji: "🧽", detail: "Saya menggunakan pemadam untuk memadam tulisan.", example: "我用橡皮擦擦掉字迹。" },
+                    { bm: "pembaris", tag: "名词", zh: "尺", emoji: "📏", detail: "Gariskan perkataan dengan pembaris.", example: "用尺给词语画底线。" },
+                    { bm: "beg", tag: "名词", zh: "书包", emoji: "🎒", detail: "Beg sekolah saya berwarna biru.", example: "我的书包是蓝色的。" },
+                    { bm: "loceng", tag: "名词", zh: "铃铛/校铃", emoji: "🔔", detail: "Loceng sekolah berbunyi menandakan waktu rehat.", example: "校铃响起表示下课休息时间到了。" },
+                    { bm: "pejabat", tag: "名词", zh: "办公室", emoji: "🏢", detail: "Guru besar sedang bekerja di pejabat.", example: "校长正在办公室工作。" },
+                    { bm: "tandas", tag: "名词", zh: "厕所", emoji: "🚽", detail: "Kita mestilah menjaga kebersihan tandas.", example: "我们必须照顾厕所的卫生。" },
+                    { bm: "bendera", tag: "名词", zh: "国旗/旗帜", emoji: "🇲🇾", detail: "Kami menghormati bendera Malaysia.", example: "我们尊重马来西亚国旗。" },
+                    { bm: "belajar", tag: "动词", zh: "学习", emoji: "✍️", detail: "Murid-murid belajar dengan tekun.", example: "学生们勤奋地学习。" },
+                    { bm: "menulis", tag: "动词", zh: "写字", emoji: "📝", detail: "Saya menulis nota di dalam buku.", example: "我在书里写笔记。" },
+                    { bm: "membaca", tag: "动词", zh: "阅读", emoji: "📖", detail: "Membaca menambahkan pengetahuan.", example: "阅读能增加知识。" },
+                    { bm: "melukis", tag: "动词", zh: "绘画", emoji: "🎨", detail: "Adik suka melukis gambar bunga.", example: "妹妹喜欢画花朵的画。" },
+                    { bm: "berbaris", tag: "动词", zh: "排队", emoji: "🚶", detail: "Kita harus berbaris semasa membeli makanan.", example: "我们买食物时必须排队。" },
+                    { bm: "lari", tag: "动词", zh: "奔跑", emoji: "🏃‍♂️", detail: "Jangan lari di koridor sekolah.", example: "不要在学校走廊奔跑。" },
+                    { bm: "bermain", tag: "动词", zh: "玩耍", emoji: "⚽", detail: "Mereka bermain bola di padang.", example: "他们正在操场上踢球。" },
+                    { bm: "berkawan", tag: "动词", zh: "交朋友", emoji: "🤝", detail: "Sangat seronok berkawan di sekolah.", example: "在学校里交朋友非常快乐。" },
+                    { bm: "senyap", tag: "形容词", zh: "安静", emoji: "🤫", detail: "Keadaan di perpustakaan sangat senyap.", example: "图书馆里的环境非常安静。" },
+                    { bm: "rajin", tag: "形容词", zh: "勤劳", emoji: "🐝", detail: "Murid yang rajin akan berjaya.", example: "勤劳的学生会成功。" },
+                    { bm: "pintar", tag: "形容词", zh: "聪明", emoji: "💡", detail: "Zhi Seng seorang murid yang pintar.", example: "志成是一个聪明的学生。" },
+                    { bm: "berdisiplin", tag: "形容词", zh: "守纪律", emoji: "👮", detail: "Murid yang berdisiplin sentiasa patuh peraturan.", example: "守纪律的学生总是遵守规则。" }
+                ]
+            },
+            {
+                unit: 4,
+                unitTitle: "单元 4: Sahabat Karib (好朋友)",
+                words: [
+                    { bm: "bermain", tag: "动词", zh: "玩耍", emoji: "🪁", detail: "Mereka bermain buaian di taman rekreasi.", example: "他们正在休闲公园里荡秋千。" },
+                    { bm: "bantu-membantu", tag: "动词", zh: "互相帮助", emoji: "🤝", detail: "Kita mestilah saling bantu-membantu.", example: "我们必须互相信任并互相帮助。" },
+                    { bm: "berkongsi", tag: "动词", zh: "分享", emoji: "🍕", detail: "Ali berkongsi bekalan makanan dengan rakan.", example: "阿里和他的朋友分享他的便当食物。" },
+                    { bm: "baik hati", tag: "形容词", zh: "善良/好心", emoji: "❤️", detail: "Amira seorang budak yang baik hati.", example: "阿米拉是一个心地善良的孩子。" },
+                    { bm: "gembira", tag: "形容词", zh: "高兴/快乐", emoji: "😊", detail: "Kami berasa gembira dapat bertemu kembali.", example: "能再次相遇我们感到非常高兴。" },
+                    { bm: "jujur", tag: "形容词", zh: "诚实", emoji: "🌟", detail: "Budak yang jujur sentiasa disayangi orang.", example: "诚实的孩子总是受人喜爱。" },
+                    { bm: "rakan", tag: "名词", zh: "朋友", emoji: "🧑‍🤝‍🧑", detail: "Ming Yee ialah rakan baik saya.", example: "明毅是我的好朋友。" },
+                    { bm: "jiran", tag: "名词", zh: "邻居", emoji: "🏡", detail: "Jiran kita adalah seperti keluarga sendiri.", example: "我们的邻居就像自己的家人一样。" },
+                    { bm: "hormat", tag: "动词", zh: "尊重", emoji: "🙏", detail: "Kita harus hormat kepada rakan sekelas.", example: "我们必须尊重同班同学。" },
+                    { bm: "ikhlas", tag: "形容词", zh: "真诚/真心", emoji: "💎", detail: "Membantu orang lain dengan ikhlas.", example: "真诚地去帮助他人。" },
+                    { bm: "mesra", tag: "形容词", zh: "和蔼/亲切", emoji: "🤗", detail: "Rakan saya sangat mesra dan sopan.", example: "我的朋友非常亲切而有礼貌。" },
+                    { bm: "ziarah", tag: "动词", zh: "探望/拜访", emoji: "🏠", detail: "Kami melawat jiran yang sakit.", example: "我们去探望生病的邻居。" },
+                    { bm: "hadiah", tag: "名词", zh: "礼物", emoji: "🎁", detail: "Saya memberi hadiah kepada sahabat saya.", example: "我送了一份礼物给我的好朋友。" },
+                    { bm: "salam", tag: "动词/名词", zh: "问候/握手", emoji: "🤝", detail: "Memberi salam kepada rakan.", example: "向朋友们问好问候。" },
+                    { bm: "bual", tag: "动词", zh: "聊天/谈话", emoji: "💬", detail: "Kami berbual di bawah pohon rendang.", example: "我们在阴凉的树下聊天。" },
+                    { bm: "maaf", tag: "动词/名词", zh: "原谅/对不起", emoji: "🥺", detail: "Minta maaf jika melakukan kesalahan.", example: "如果做错了事请诚恳道歉。" },
+                    { bm: "setia", tag: "形容词", zh: "忠实", emoji: "🐕", detail: "Sahabat yang setia sentiasa menolong kita.", example: "忠实的朋友总是在我们有难时帮助我们。" },
+                    { bm: "ceria", tag: "形容词", zh: "开朗/快乐", emoji: "☀️", detail: "Wajah kawanku sentiasa ceria.", emoji: "☀️", detail: "我的朋友脸上总是带着开朗的笑容。", example: "我朋友的脸总是很开朗。" },
+                    { bm: "sopan", tag: "形容词", zh: "有礼貌", emoji: "🙇‍♂️", detail: "Anak yang sopan dihormati ramai.", example: "有礼貌的孩子受人尊重。" },
+                    { bm: "adil", tag: "形容词", zh: "公平", emoji: "⚖️", detail: "Kita harus bersikap adil semasa bermain.", example: "我们在玩游戏时必须保持公平。" },
+                    { bm: "prihatin", tag: "形容词", zh: "关怀/关心", emoji: "🥰", detail: "Guru sangat prihatin terhadap murid.", example: "老师对学生非常关怀。" },
+                    { bm: "sayang", tag: "动词", zh: "关爱/爱护", emoji: "💖", detail: "Rakan-rakan saling menyayangi.", example: "朋友们互相关爱。" },
+                    { bm: "puji", tag: "动词", zh: "赞扬/夸奖", emoji: "👍", detail: "Cikgu memuji sikap rajin Wei Han.", example: "老师赞扬伟汉勤劳的态度。" },
+                    { bm: "pimpin", tag: "动词", zh: "牵手/引导", emoji: "🧑‍手", detail: "Abang memimpin tangan adik.", example: "哥哥牵着弟弟的手。" },
+                    { bm: "main bersama", tag: "短语", zh: "一起玩", emoji: "🧸", detail: "Kami main bersama di taman.", example: "我们一起在公园里玩耍。" },
+                    { bm: "tegur", tag: "动词", zh: "打招呼", emoji: "👋", detail: "Tegur rakan dengan mesra.", example: "亲切地向朋友打招呼。" },
+                    { bm: "sabar", tag: "形容词", zh: "耐心/宽容", emoji: "🧘", detail: "Sabar mendengar penjelasan rakan.", example: "耐心地听朋友的解释。" },
+                    { bm: "tolong", tag: "动词", zh: "帮忙", emoji: "🆘", detail: "Tolong rakan yang terjatuh.", example: "帮忙扶起摔倒的朋友。" },
+                    { bm: "bekerjasama", tag: "动词", zh: "协作/合作", emoji: "🤝", detail: "Kami bekerjasama menghias bilik darjah.", example: "我们合作装饰教室。" },
+                    { bm: "erat", tag: "形容词", zh: "亲密/紧密", emoji: "🔗", detail: "Persahabatan mereka sangat erat.", example: "他们的友谊非常亲密。" }
+                ]
+            },
+            {
+                unit: 5,
+                unitTitle: "单元 5: Amalan Sihat (健康习惯)",
+                words: [
+                    { bm: "bersenam", tag: "动词", zh: "做运动", emoji: "🧘", detail: "Kita bersenam pada setiap pagi.", example: "我们每天早上做运动。" },
+                    { bm: "gosok gigi", tag: "短语", zh: "刷牙", emoji: "🪥", detail: "Kita mestilah gosok gigi selepas makan.", example: "我们必须在饭后刷牙。" },
+                    { bm: "mandi", tag: "动词", zh: "洗澡/沐浴", emoji: "🛁", detail: "Mandi sekurang-kurangnya dua kali sehari.", example: "一天至少洗澡两次。" },
+                    { bm: "sayur-sayuran", tag: "名词", zh: "蔬菜类", emoji: "🥦", detail: "Makan banyak sayur-sayuran sangat sihat.", example: "多吃蔬菜身体非常健康。" },
+                    { bm: "berkhasiat", tag: "形容词", zh: "有营养", emoji: "🥛", detail: "Susu ialah minuman yang berkhasiat.", example: "牛奶是一种非常有营养的饮料。" },
+                    { bm: "tidur", tag: "动词", zh: "睡觉", emoji: "😴", detail: "Kita perlu tidur awal setiap malam.", example: "我们每晚需要早点睡觉。" },
+                    { bm: "buah-buahan", tag: "名词", zh: "水果类", emoji: "🍎", detail: "Buah-buahan membekalkan vitamin.", example: "水果能提供丰富的维他命。" },
+                    { bm: "air", tag: "名词", zh: "白开水", emoji: "💧", detail: "Minum air kosong secukupnya.", example: "喝足够的分量白开水。" },
+                    { bm: "susu", tag: "名词", zh: "牛奶", emoji: "🥛", detail: "Susu baik untuk kesihatan tulang.", example: "牛奶对骨骼健康非常有益。" },
+                    { bm: "sabun", tag: "名词", zh: "肥皂", emoji: "🧼", detail: "Basuh tangan menggunakan sabun.", example: "用肥皂来清洗双手。" },
+                    { bm: "tuala", tag: "名词", zh: "毛巾", emoji: "🧣", detail: "Tuala yang bersih digantung pada rak.", example: "干净的毛巾被挂在架子上。" },
+                    { bm: "syampu", tag: "名词", zh: "洗发水", emoji: "🧴", detail: "Gunakan syampu untuk cuci rambut.", example: "使用洗发水来清洗头发。" },
+                    { bm: "sikat", tag: "名词/动词", zh: "梳子/梳头", emoji: "🪮", detail: "Sikat rambut supaya kelihatan kemas.", example: "梳好头发以便看起来整齐。" },
+                    { bm: "kuku", tag: "名词", zh: "指甲", emoji: "💅", detail: "Pastikan kuku sentiasa pendek.", example: "确保指甲经常保持短小干净。" },
+                    { bm: "potong", tag: "动词", zh: "剪除/切断", emoji: "✂️", detail: "Potong kuku yang panjang.", example: "剪掉长指甲。" },
+                    { bm: "bersih", tag: "形容词", zh: "干净/卫生", emoji: "🧼", detail: "Sentiasa pastikan pakaian bersih.", example: "经常确保衣服干净。" },
+                    { bm: "cergas", tag: "形容词", zh: "有活力", emoji: "🏃", detail: "Badan cergas otak cerdas.", example: "身体有活力，大脑就敏捷。" },
+                    { bm: "cerdas", tag: "形容词", zh: "敏捷/聪明", emoji: "🧠", detail: "Minda cerdas datang daripada badan sihat.", example: "敏捷的思维源自健康的身体。" },
+                    { bm: "peluh", tag: "名词", zh: "汗水", emoji: "💦", detail: "Peluh keluar selepas kita berlari.", example: "我们跑步后出汗。" },
+                    { bm: "berlari", tag: "动词", zh: "跑步", emoji: "🏃‍♀️", detail: "Kami berlari di taman rekreasi.", example: "我们在休闲公园里跑步。" },
+                    { bm: "melompat", tag: "动词", zh: "跳跃", emoji: "🦘", detail: "Kanak-kanak suka melompat tali.", example: "孩子们喜欢跳绳。" },
+                    { bm: "rehat", tag: "动词/名词", zh: "休息", emoji: "🛌", detail: "Kita perlu rehat yang cukup.", example: "我们需要充足的休息。" },
+                    { bm: "vitamin", tag: "名词", zh: "维他命", emoji: "💊", detail: "Buah oren kaya dengan vitamin C.", example: "橙子富含维他命C。" },
+                    { bm: "makanan", tag: "名词", zh: "食物", emoji: "🍲", detail: "Makanan seimbang sangat penting.", example: "均衡的食物非常重要。" },
+                    { bm: "sihat", tag: "形容词", zh: "健康", emoji: "💪", detail: "Saya mahu sentiasa sihat.", example: "我想经常保持健康。" },
+                    { bm: "ubat", tag: "名词", zh: "药物", emoji: "💊", detail: "Makan ubat mengikut nasihat doktor.", example: "按照医生的嘱咐吃药。" },
+                    { bm: "doktor", tag: "名词", zh: "医生", emoji: "🩺", detail: "Doktor memeriksa kesihatan saya.", example: "医生检查我的健康状况。" },
+                    { bm: "sakit", tag: "形容词/名词", zh: "生病/疼痛", emoji: "🤒", detail: "Adik sakit perut kerana makan pedas.", example: "弟弟因为吃辣肚子痛。" },
+                    { bm: "kuat", tag: "形容词", zh: "强壮", emoji: "💪", detail: "Badan abang sangat kuat.", example: "哥哥的身体非常强壮。" },
+                    { bm: "senyuman", tag: "名词", zh: "笑容", emoji: "😊", detail: "Senyuman menunjukkan kita ceria.", example: "笑容显示出我们的开朗。" }
+                ]
+            },
+            {
+                unit: 6,
+                unitTitle: "单元 6: Keselamatan Jalan Raya (道路安全)",
+                words: [
+                    { bm: "melintas", tag: "动词", zh: "穿越(马路)", emoji: "🚶‍♂️", detail: "Kita mesti melintas jalan dengan hati-hati.", example: "我们必须小心地过马路。" },
+                    { bm: "waspada", tag: "形容词", zh: "小心/警惕", emoji: "⚠️", detail: "Sentiasa waspada semasa di jalan raya.", example: "在公路上时要经常保持警惕。" },
+                    { bm: "jejantas", tag: "名词", zh: "人行天桥", emoji: "🌉", detail: "Gunakan jejantas untuk keselamatan diri.", example: "为了安全请使用人行天桥。" },
+                    { bm: "topi keledar", tag: "名词", zh: "安全头盔", emoji: "🪖", detail: "Pakai topi keledar semasa menunggang motosikal.", example: "骑摩托车时请佩戴安全头盔。" },
+                    { bm: "lampu isyarat", tag: "名词", zh: "交通红绿灯", emoji: "🚦", detail: "Lampu isyarat merah bermaksud berhenti.", example: "红色的交通灯意味着停止。" },
+                    { bm: "tali pinggang", tag: "名词", zh: "安全带", emoji: "🦺", detail: "Pasang tali pinggang keledar sebelum memandu.", example: "开车前系好安全带。" },
+                    { bm: "jalan raya", tag: "名词", zh: "马路/公路", emoji: "🛣️", detail: "Jangan bermain di tepi jalan raya.", example: "不要在马路旁玩耍。" },
+                    { bm: "kereta", tag: "名词", zh: "汽车", emoji: "🚗", detail: "Bapa memandu kereta dengan cermat.", example: "爸爸小心地开着车。" },
+                    { bm: "motosikal", tag: "名词", zh: "摩托车", emoji: "🏍️", detail: "Abang menunggang motosikal ke kerja.", example: "哥哥骑摩托车去工作。" },
+                    { bm: "basikal", tag: "名词", zh: "自行车/脚车", emoji: "🚲", detail: "Adik menunggang basikal dengan perlahan.", example: "弟弟慢慢地骑自行车。" },
+                    { bm: "bas", tag: "名词", zh: "巴士/公车", emoji: "🚌", detail: "Kami naik bas ke sekolah.", example: "我们坐公共汽车上学。" },
+                    { bm: "pemandu", tag: "名词", zh: "司机", emoji: "🧑‍✈️", detail: "Pemandu bas itu sangat bertangungjawab.", example: "那个公交车司机非常负责任。" },
+                    { bm: "pejalan kaki", tag: "名词", zh: "行人", emoji: "🚶", detail: "Pejalan kaki berjalan di atas kaki lima.", example: "行人在人行道上行走。" },
+                    { bm: "lintasan belang", tag: "名词", zh: "斑马线", emoji: "🦓", detail: "Gunakan lintasan belang semasa melintas.", example: "过马路时请使用斑马线。" },
+                    { bm: "polis trafik", tag: "名词", zh: "交警", emoji: "👮", detail: "Polis trafik mengawal lalu lintas.", example: "交通警察正在指挥交通。" },
+                    { bm: "papan tanda", tag: "名词", zh: "路标/指示牌", emoji: "🪧", detail: "Papan tanda menunjukkan had laju.", example: "路标牌显示了限制时速。" },
+                    { bm: "hentian bas", tag: "名词", zh: "巴士站", emoji: "🏣", detail: "Kami menunggu bas di hentian bas.", example: "我们在巴士站等巴士。" },
+                    { bm: "lorong", tag: "名词", zh: "车道/小巷", emoji: "🛣️", detail: "Motosikal lalu di lorong khas.", example: "摩托车在专用车道上行驶。" },
+                    { bm: "laju", tag: "形容词", zh: "快/高速", emoji: "⚡", detail: "Kereta itu bergerak sangat laju.", example: "那辆车开得非常快。" },
+                    { bm: "perlahan", tag: "形容词", zh: "慢速", emoji: "🐢", detail: "Sila pandu dengan perlahan di kawasan sekolah.", example: "在学校区域请减速慢行。" },
+                    { bm: "berhenti", tag: "动词", zh: "停下/终止", emoji: "🛑", detail: "Kereta mesti berhenti apabila lampu merah.", example: "红灯亮起时车辆必须停下。" },
+                    { bm: "awas", tag: "形容词/动词", zh: "注意/小心", emoji: "⚠️", detail: "Awas! Jalan licin selepas hujan.", example: "注意！雨后路滑。" },
+                    { bm: "patuh", tag: "动词", zh: "遵守", emoji: "📝", detail: "Kita patuh undang-undang jalan raya.", example: "我们遵守交通法规。" },
+                    { bm: "peraturan", tag: "名词", zh: "规则/守则", emoji: "📜", detail: "Sentiasa ikuti peraturan keselamatan.", example: "经常遵循安全规则。" },
+                    { bm: "selamat", tag: "形容词", zh: "安全", emoji: "🛡️", detail: "Kita mahu perjalanan yang selamat.", example: "我们希望旅途安全。" },
+                    { bm: "bahaya", tag: "形容词/名词", zh: "危险", emoji: "💥", detail: "Bermain di jalan raya sangat bahaya.", example: "在公路上玩耍非常危险。" },
+                    { bm: "cuai", tag: "形容词", zh: "粗心/大意", emoji: "🤦", detail: "Sikap cuai punca kemalangan.", example: "粗心的态度是车祸的根源。" },
+                    { bm: "cermat", tag: "形容词", zh: "小心/谨慎", emoji: "👍", detail: "Memandu dengan cermat, jiwa selamat.", example: "小心驾驶，生命安全。" },
+                    { bm: "topi", tag: "名词", zh: "帽子", emoji: "🧢", detail: "Bapa memakai topi kerana cuaca panas.", example: "因为天气炎热，爸爸戴着帽子。" },
+                    { bm: "berjalan", tag: "动词", zh: "步行/走", emoji: "🚶‍♀️", detail: "Kami berjalan kaki ke kedai.", example: "我们步行走路去商店。" }
+                ]
+            }
+        ];
+
+        // 勋章库列表
+        const BADGES_DATABASE = [
+            { name: "机灵老虎勋章", emoji: "🐯" },
+            { name: "智慧猫头鹰勋章", emoji: "🦉" },
+            { name: "勤劳小蜜蜂勋章", emoji: "🐝" },
+            { name: "乖巧萌兔勋章", emoji: "🐰" },
+            { name: "友善海豚勋章", emoji: "🐬" },
+            { name: "闪亮独角兽勋章", emoji: "🦄" }
+        ];
+
+        // 全局核心状态
+        let currentUnitIndex = 0;
+        let activeMode = "card"; // card, quiz, match, spell
+        let starCount = 10;
+        let badgeCount = 0;
+        let unlockedBadges = [];
+        
+        // 显隐设置
+        let showBM = true;
+        let showZH = true;
+        let showEG = true;
+
+        // 连连看匹配暂存
+        let matchSelectedLeft = null;
+        let matchSelectedRight = null;
+        let matchRemainingPairs = 0;
+
+        // 听音选词暂存
+        let quizCurrentWord = null;
+        let quizRound = 1;
+        let quizSuccessCount = 0;
+
+        // 拼写游戏暂存
+        let spellCurrentWord = null;
+        let spellUserLetters = [];
+        let spellTargetLetters = [];
+
+        // 音频合成接口
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playEffectSound(type) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(330, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                } else if (type === 'fail') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } else if (type === 'cheer') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.4);
+                }
+            } catch(e) {
+                console.log("AudioContext blocked.");
+            }
+        }
+
+        // Web Speech API 马来语发音
+        function speakBM(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                const voices = window.speechSynthesis.getVoices();
+                const bmVoice = voices.find(v => v.lang.startsWith('ms') || v.lang.startsWith('id'));
+                if (bmVoice) {
+                    utterance.voice = bmVoice;
+                }
+                utterance.lang = 'ms-MY';
+                utterance.rate = 0.85; 
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showToast("您的浏览器暂不支持语音播放");
+            }
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById("toast-msg");
+            document.getElementById("toast-text").innerText = text;
+            toast.style.opacity = "1";
+            toast.style.pointerEvents = "auto";
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.pointerEvents = "none";
+            }, 2500);
+        }
+
+        window.onload = function() {
+            window.speechSynthesis.getVoices();
+            renderSidebar();
+            selectUnit(0);
+            lucide.createIcons();
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById("unit-sidebar");
+            sidebar.innerHTML = "";
+            KSSR_DATA.forEach((u, idx) => {
+                const isActive = idx === currentUnitIndex;
+                const button = document.createElement("button");
+                button.className = `w-full text-left p-3.5 rounded-2xl flex items-center justify-between border-2 transition-all ${
+                    isActive 
+                    ? 'border-blue-400 bg-blue-50 text-blue-700 font-bold shadow-sm' 
+                    : 'border-transparent bg-slate-50 text-slate-600 hover:bg-slate-100'
+                }`;
+                button.onclick = () => selectUnit(idx);
+                
+                button.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="text-base">${idx === 0 ? '👪' : idx === 1 ? '🏠' : idx === 2 ? '🏫' : idx === 3 ? '🤝' : idx === 4 ? '🥦' : '🚦'}</span>
+                        <span class="text-xs tracking-tight line-clamp-1">${u.unitTitle}</span>
+                    </div>
+                    <span class="text-[10px] bg-white border border-slate-200 px-2 py-0.5 rounded-full text-slate-400 font-semibold">${u.words.length}词</span>
+                `;
+                sidebar.appendChild(button);
+            });
+        }
+
+        function selectUnit(index) {
+            if(autoReadTimer) {
+                clearTimeout(autoReadTimer);
+                const btn = document.getElementById("btn-read-all");
+                btn.disabled = false;
+                btn.classList.remove("opacity-50");
+            }
+            currentUnitIndex = index;
+            document.getElementById("current-unit-title").innerText = KSSR_DATA[index].unitTitle;
+            renderSidebar();
+            refreshCurrentTab();
+            playEffectSound('click');
+        }
+
+        function switchMode(mode) {
+            if(autoReadTimer) {
+                clearTimeout(autoReadTimer);
+                const btn = document.getElementById("btn-read-all");
+                btn.disabled = false;
+                btn.classList.remove("opacity-50");
+            }
+            activeMode = mode;
+            
+            const modes = ["card", "quiz", "match", "spell"];
+            modes.forEach(m => {
+                const btn = document.getElementById(`tab-btn-${m}`);
+                if (m === mode) {
+                    btn.className = "px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center space-x-2 bg-blue-500 text-white shadow-sm";
+                } else {
+                    btn.className = "px-5 py-3 rounded-2xl font-bold text-sm transition-all flex items-center space-x-2 bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50";
+                }
+            });
+
+            const controlsBar = document.getElementById("controls-bar");
+            if (mode === "card") {
+                controlsBar.classList.remove("hidden");
+            } else {
+                controlsBar.classList.add("hidden");
+            }
+
+            document.getElementById("view-card").classList.add("hidden");
+            document.getElementById("view-quiz").classList.add("hidden");
+            document.getElementById("view-match").classList.add("hidden");
+            document.getElementById("view-spell").classList.add("hidden");
+
+            if (mode === "card") document.getElementById("view-card").classList.remove("hidden");
+            if (mode === "quiz") document.getElementById("view-quiz").classList.remove("hidden");
+            if (mode === "match") document.getElementById("view-match").classList.remove("hidden");
+            if (mode === "spell") document.getElementById("view-spell").classList.remove("hidden");
+
+            refreshCurrentTab();
+            playEffectSound('click');
+        }
+
+        function refreshCurrentTab() {
+            if (activeMode === "card") {
+                renderFlashcards();
+            } else if (activeMode === "quiz") {
+                startQuizMode();
+            } else if (activeMode === "match") {
+                startMatchMode();
+            } else if (activeMode === "spell") {
+                startSpellMode();
+            }
+            lucide.createIcons();
+        }
+
+        /* ------------------ 词卡学习板块 ------------------ */
+        function renderFlashcards() {
+            const grid = document.getElementById("view-card");
+            grid.innerHTML = "";
+            const currentWords = KSSR_DATA[currentUnitIndex].words;
+
+            currentWords.forEach((item, index) => {
+                const card = document.createElement("div");
+                card.id = `word-card-${index}`;
+                card.className = "bg-white p-5 rounded-3xl border-2 border-slate-100 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-all";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-3xl p-2 bg-slate-50 rounded-2xl border border-slate-100 floating">${item.emoji}</span>
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md font-bold">${item.tag}</span>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <h4 class="text-xl font-black text-slate-800 tracking-wide kids-title" id="card-bm-${index}">${showBM ? item.bm : '***'}</h4>
+                            <button onclick="speakBM('${item.bm}')" class="p-1.5 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-lg active:scale-90 transition-all">
+                                <i data-lucide="volume-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm text-slate-500 font-bold" id="card-zh-${index}">${showZH ? item.zh : '***'}</p>
+                    </div>
+
+                    <!-- 展开的例句 -->
+                    <div id="card-eg-container-${index}" class="${showEG ? '' : 'hidden'} pt-3 border-t border-slate-100 space-y-1 bg-slate-50 p-3 rounded-2xl">
+                        <p class="text-[11px] font-semibold text-slate-600 italic">造句例句 (Contoh Ayat):</p>
+                        <p class="text-xs font-semibold text-slate-700 leading-relaxed">${item.detail}</p>
+                        <p class="text-xs text-slate-400 font-medium">${item.example}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleVisibility(type) {
+            const btn = document.getElementById(`opt-${type}`);
+            if (type === 'bm') {
+                showBM = !showBM;
+                btn.className = showBM ? "px-3 py-1 text-xs font-bold rounded-full border bg-blue-50 text-blue-600 border-blue-200" : "px-3 py-1 text-xs font-bold rounded-full border bg-slate-100 text-slate-400 border-slate-200";
+            } else if (type === 'zh') {
+                showZH = !showZH;
+                btn.className = showZH ? "px-3 py-1 text-xs font-bold rounded-full border bg-blue-50 text-blue-600 border-blue-200" : "px-3 py-1 text-xs font-bold rounded-full border bg-slate-100 text-slate-400 border-slate-200";
+            } else if (type === 'eg') {
+                showEG = !showEG;
+                btn.className = showEG ? "px-3 py-1 text-xs font-bold rounded-full border bg-blue-50 text-blue-600 border-blue-200" : "px-3 py-1 text-xs font-bold rounded-full border bg-slate-100 text-slate-400 border-slate-200";
+            }
+            renderFlashcards();
+            playEffectSound('click');
+        }
+
+        let autoReadTimer = null;
+        function autoReadAll() {
+            const currentWords = KSSR_DATA[currentUnitIndex].words;
+            let currentIdx = 0;
+            
+            const btn = document.getElementById("btn-read-all");
+            btn.disabled = true;
+            btn.classList.add("opacity-50");
+
+            function speakNext() {
+                if (currentIdx >= currentWords.length) {
+                    btn.disabled = false;
+                    btn.classList.remove("opacity-50");
+                    showToast("整组 30 个生词全部朗读完毕！🎉");
+                    return;
+                }
+                
+                for (let i = 0; i < currentWords.length; i++) {
+                    const c = document.getElementById(`word-card-${i}`);
+                    if (c) c.classList.remove("card-active");
+                }
+
+                const activeCard = document.getElementById(`word-card-${currentIdx}`);
+                if (activeCard) {
+                    activeCard.classList.add("card-active");
+                    activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                const word = currentWords[currentIdx];
+                speakBM(word.bm);
+
+                currentIdx++;
+                autoReadTimer = setTimeout(speakNext, 3200);
+            }
+
+            speakNext();
+        }
+
+        /* ------------------ 听音选词板块 ------------------ */
+        function startQuizMode() {
+            quizRound = 1;
+            quizSuccessCount = 0;
+            generateQuizQuestion();
+        }
+
+        function generateQuizQuestion() {
+            document.getElementById("quiz-q-num").innerText = quizRound;
+            const currentWords = [...KSSR_DATA[currentUnitIndex].words];
+            
+            // 每次从 30 个词里随机抽取一个正确词
+            quizCurrentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
+            
+            setTimeout(() => { playQuizWordAudio(); }, 300);
+
+            // 混淆项抽取
+            let options = [quizCurrentWord];
+            const others = currentWords.filter(w => w.bm !== quizCurrentWord.bm);
+            
+            shuffleArray(others);
+            for (let i = 0; i < Math.min(3, others.length); i++) {
+                options.push(others[i]);
+            }
+            
+            shuffleArray(options);
+
+            const optionsGrid = document.getElementById("quiz-options-grid");
+            optionsGrid.innerHTML = "";
+            options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "p-4 rounded-2xl font-bold border-2 border-slate-200 text-slate-700 bg-white hover:border-purple-300 hover:bg-purple-50 active:scale-95 transition-all text-sm flex items-center justify-between";
+                btn.onclick = () => checkQuizAnswer(opt.bm, btn);
+                btn.innerHTML = `
+                    <span>${opt.zh} ( ${opt.bm} )</span>
+                    <span class="text-lg">${opt.emoji}</span>
+                `;
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function playQuizWordAudio() {
+            if (quizCurrentWord) {
+                speakBM(quizCurrentWord.bm);
+            }
+        }
+
+        function checkQuizAnswer(selectedBm, element) {
+            const allBtns = document.getElementById("quiz-options-grid").getElementsByTagName("button");
+            for (let b of allBtns) b.disabled = true;
+
+            if (selectedBm === quizCurrentWord.bm) {
+                element.classList.remove("border-slate-200");
+                element.classList.add("border-emerald-500", "bg-emerald-50", "text-emerald-700");
+                playEffectSound('success');
+                quizSuccessCount++;
+                addStars(2);
+            } else {
+                element.classList.remove("border-slate-200");
+                element.classList.add("border-rose-500", "bg-rose-50", "text-rose-700");
+                playEffectSound('fail');
+                
+                for (let b of allBtns) {
+                    if (b.innerText.includes(quizCurrentWord.bm)) {
+                        b.classList.add("border-emerald-500", "bg-emerald-50", "text-emerald-700");
+                    }
+                }
+            }
+
+            setTimeout(() => {
+                if (quizRound < 5) {
+                    quizRound++;
+                    generateQuizQuestion();
+                } else {
+                    triggerWinModal();
+                }
+            }, 1800);
+        }
+
+        /* ------------------ 词义配对板块 (连连看) ------------------ */
+        function startMatchMode() {
+            matchSelectedLeft = null;
+            matchSelectedRight = null;
+            
+            // 每次从 30 个生词里完全随机抽取 6 个进行连线
+            const rawWords = [...KSSR_DATA[currentUnitIndex].words];
+            shuffleArray(rawWords);
+            const activeWords = rawWords.slice(0, 6);
+            matchRemainingPairs = activeWords.length;
+
+            const bmLis = activeWords.map((w, idx) => ({ id: idx, val: w.bm, linkId: idx }));
+            const zhLis = activeWords.map((w, idx) => ({ id: idx, val: `${w.emoji} ${w.zh}`, linkId: idx }));
+
+            shuffleArray(bmLis);
+            shuffleArray(zhLis);
+
+            const leftCol = document.getElementById("match-left");
+            const rightCol = document.getElementById("match-right");
+            leftCol.innerHTML = "";
+            rightCol.innerHTML = "";
+
+            // 左侧国语生词
+            bmLis.forEach(item => {
+                const card = document.createElement("button");
+                card.id = `match-l-${item.id}`;
+                card.className = "w-full p-4 rounded-2xl font-bold text-center border-2 border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/50 active:scale-95 transition-all text-sm tracking-wide shadow-sm flex items-center justify-between";
+                card.onclick = () => clickMatchItem('left', item.id, item.linkId, item.val);
+                card.innerHTML = `
+                    <span class="kids-title text-emerald-700 font-extrabold text-base">${item.val}</span>
+                    <i data-lucide="volume-2" class="w-4 h-4 text-emerald-500" onclick="event.stopPropagation(); speakBM('${item.val}')"></i>
+                `;
+                leftCol.appendChild(card);
+            });
+
+            // 右侧华语解释
+            zhLis.forEach(item => {
+                const card = document.createElement("button");
+                card.id = `match-r-${item.id}`;
+                card.className = "w-full p-4 rounded-2xl font-bold text-center border-2 border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/50 active:scale-95 transition-all text-sm shadow-sm text-left";
+                card.onclick = () => clickMatchItem('right', item.id, item.linkId, item.val);
+                card.innerText = item.val;
+                rightCol.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function clickMatchItem(side, id, linkId, val) {
+            playEffectSound('click');
+
+            if (side === 'left') {
+                if (matchSelectedLeft) {
+                    document.getElementById(`match-l-${matchSelectedLeft.id}`).classList.remove("border-emerald-500", "bg-emerald-50");
+                }
+                matchSelectedLeft = { id, linkId, val };
+                document.getElementById(`match-l-${id}`).classList.add("border-emerald-500", "bg-emerald-50");
+                speakBM(val);
+            } else {
+                if (matchSelectedRight) {
+                    document.getElementById(`match-r-${matchSelectedRight.id}`).classList.remove("border-emerald-500", "bg-emerald-50");
+                }
+                matchSelectedRight = { id, linkId, val };
+                document.getElementById(`match-r-${id}`).classList.add("border-emerald-500", "bg-emerald-50");
+            }
+
+            if (matchSelectedLeft && matchSelectedRight) {
+                const lCard = document.getElementById(`match-l-${matchSelectedLeft.id}`);
+                const rCard = document.getElementById(`match-r-${matchSelectedRight.id}`);
+
+                if (matchSelectedLeft.linkId === matchSelectedRight.linkId) {
+                    playEffectSound('success');
+                    
+                    lCard.className = "w-full p-4 rounded-2xl font-bold border-2 border-emerald-500 bg-emerald-500 text-white pointer-events-none opacity-0 scale-95 transition-all duration-300 flex items-center justify-between";
+                    rCard.className = "w-full p-4 rounded-2xl font-bold border-2 border-emerald-500 bg-emerald-500 text-white pointer-events-none opacity-0 scale-95 transition-all duration-300";
+                    
+                    addStars(2);
+                    matchRemainingPairs--;
+
+                    if (matchRemainingPairs === 0) {
+                        setTimeout(() => {
+                            triggerWinModal();
+                        }, 800);
+                    }
+                } else {
+                    playEffectSound('fail');
+                    lCard.classList.add("border-rose-400", "bg-rose-50");
+                    rCard.classList.add("border-rose-400", "bg-rose-50");
+                    
+                    const tempL = matchSelectedLeft.id;
+                    const tempR = matchSelectedRight.id;
+                    setTimeout(() => {
+                        const el = document.getElementById(`match-l-${tempL}`);
+                        const er = document.getElementById(`match-r-${tempR}`);
+                        if (el) el.className = "w-full p-4 rounded-2xl font-bold text-center border-2 border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/50 active:scale-95 transition-all text-sm tracking-wide shadow-sm flex items-center justify-between";
+                        if (er) er.className = "w-full p-4 rounded-2xl font-bold text-center border-2 border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/50 active:scale-95 transition-all text-sm shadow-sm text-left";
+                    }, 800);
+                }
+
+                matchSelectedLeft = null;
+                matchSelectedRight = null;
+            }
+        }
+
+        /* ------------------ 拼写挑战游戏板块 ------------------ */
+        function startSpellMode() {
+            // 每次从该单元 30 个词库中随机抽出 1 个词进行拼写
+            const currentWords = KSSR_DATA[currentUnitIndex].words;
+            spellCurrentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
+            
+            document.getElementById("spell-chinese-hint").innerText = `${spellCurrentWord.emoji} ${spellCurrentWord.zh}`;
+            
+            spellTargetLetters = spellCurrentWord.bm.replace(/[\s\-]+/g, '').split('');
+            spellUserLetters = Array(spellTargetLetters.length).fill(null);
+
+            let letterPool = [...spellTargetLetters];
+            const extraAlphabet = "abcdefghijklmnopqrstuvwxyz".split('');
+            while (letterPool.length < spellTargetLetters.length + 3) {
+                const randLetter = extraAlphabet[Math.floor(Math.random() * extraAlphabet.length)];
+                letterPool.push(randLetter);
+            }
+            shuffleArray(letterPool);
+
+            renderSpellSlots();
+
+            const poolContainer = document.getElementById("spell-letter-pool");
+            poolContainer.innerHTML = "";
+            letterPool.forEach((letter, index) => {
+                const btn = document.createElement("button");
+                btn.id = `spell-btn-${index}`;
+                btn.className = "w-12 h-12 bg-amber-100 hover:bg-amber-200 text-amber-800 font-black text-xl rounded-full border-2 border-amber-300 shadow-sm active:scale-90 transition-all cursor-pointer kids-title flex items-center justify-center";
+                btn.onclick = () => selectSpellLetter(letter, index);
+                btn.innerText = letter;
+                poolContainer.appendChild(btn);
+            });
+
+            setTimeout(() => { playSpellWordAudio(); }, 300);
+        }
+
+        function renderSpellSlots() {
+            const container = document.getElementById("spell-slots-container");
+            container.innerHTML = "";
+            
+            let targetString = spellCurrentWord.bm;
+            let letterCounter = 0;
+
+            for (let i = 0; i < targetString.length; i++) {
+                const char = targetString[i];
+                if (char === ' ' || char === '-') {
+                    const divider = document.createElement("span");
+                    divider.className = "text-2xl font-black text-slate-400 px-1 select-none";
+                    divider.innerText = char;
+                    container.appendChild(divider);
+                } else {
+                    const slot = document.createElement("div");
+                    const index = letterCounter;
+                    slot.className = "w-12 h-12 border-2 border-dashed border-blue-300 rounded-xl bg-white flex items-center justify-center text-xl font-extrabold text-blue-600 kids-title shadow-inner cursor-pointer";
+                    slot.innerText = (spellUserLetters[index] && spellUserLetters[index].letter) || "";
+                    slot.onclick = () => removeSpellLetter(index);
+                    container.appendChild(slot);
+                    letterCounter++;
+                }
+            }
+        }
+
+        function playSpellWordAudio() {
+            if (spellCurrentWord) {
+                speakBM(spellCurrentWord.bm);
+            }
+        }
+
+        function selectSpellLetter(letter, btnIndex) {
+            playEffectSound('click');
+            const emptyIdx = spellUserLetters.indexOf(null);
+            if (emptyIdx !== -1) {
+                spellUserLetters[emptyIdx] = { letter, poolIndex: btnIndex };
+                
+                const poolBtn = document.getElementById(`spell-btn-${btnIndex}`);
+                poolBtn.classList.add("opacity-20", "pointer-events-none");
+
+                renderSpellSlots();
+            }
+        }
+
+        function removeSpellLetter(userIndex) {
+            if (spellUserLetters[userIndex]) {
+                playEffectSound('click');
+                const { poolIndex } = spellUserLetters[userIndex];
+                
+                const poolBtn = document.getElementById(`spell-btn-${poolIndex}`);
+                poolBtn.classList.remove("opacity-20", "pointer-events-none");
+
+                spellUserLetters[userIndex] = null;
+                renderSpellSlots();
+            }
+        }
+
+        function resetSpellCurrent() {
+            playEffectSound('click');
+            startSpellMode();
+        }
+
+        function checkSpelling() {
+            const userString = spellUserLetters.map(item => item ? item.letter : '').join('');
+            const targetString = spellTargetLetters.join('');
+
+            if (userString === targetString) {
+                playEffectSound('success');
+                addStars(5);
+                showToast("恭喜你！拼写完全正确！🎉");
+                setTimeout(() => {
+                    triggerWinModal();
+                }, 800);
+            } else {
+                playEffectSound('fail');
+                showToast("哦不，拼写好像不太对，再试一次哦！💪");
+            }
+        }
+
+        /* ------------------ 共用辅助逻辑 ------------------ */
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function addStars(num) {
+            starCount += num;
+            document.getElementById("star-count").innerText = starCount;
+            
+            const potentialBadges = Math.floor(starCount / 30);
+            if (potentialBadges > badgeCount && badgeCount < BADGES_DATABASE.length) {
+                badgeCount = potentialBadges;
+                document.getElementById("badge-count").innerText = `${badgeCount} 勋章`;
+                
+                const nextBadge = BADGES_DATABASE[badgeCount - 1];
+                unlockedBadges.push(nextBadge);
+            }
+        }
+
+        function triggerWinModal() {
+            playEffectSound('cheer');
+            
+            let lastBadge = { name: "机灵老虎勋章", emoji: "🐯" };
+            if (unlockedBadges.length > 0) {
+                lastBadge = unlockedBadges[unlockedBadges.length - 1];
+            }
+
+            document.getElementById("unlocked-badge-emoji").innerText = lastBadge.emoji;
+            document.getElementById("unlocked-badge-name").innerText = lastBadge.name;
+
+            const modal = document.getElementById("success-modal");
+            const modalContent = document.getElementById("modal-content");
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modalContent.classList.remove("scale-90", "opacity-0");
+            }, 50);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("success-modal");
+            const modalContent = document.getElementById("modal-content");
+            modalContent.classList.add("scale-90", "opacity-0");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+                refreshCurrentTab();
+            }, 300);
+        }
+    </script>
+</body>
+</html>
